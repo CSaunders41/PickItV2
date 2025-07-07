@@ -1,60 +1,102 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Threading;
 using ExileCore;
 using ImGuiNET;
-using ItemFilterLibrary;
-using static PickIt.PickIt;
+using PickIt.Services;
 
 namespace PickIt;
 
-public class RulesDisplay
+public static class RulesDisplay
 {
     public static void DrawSettings()
     {
-        ImGui.Separator();
-        if (ImGui.Button("Open Filter Folder"))
+        try
         {
-            var configDirectory = Main.ConfigDirectory;
-            var customConfigDirectory = !string.IsNullOrEmpty(Main.Settings.CustomConfigDir)
-                ? Path.Combine(Path.GetDirectoryName(Main.ConfigDirectory)!, Main.Settings.CustomConfigDir)
-                : null;
+            var serviceManager = PickItServiceManager.Instance;
+            var plugin = serviceManager.GetService<PickIt>();
+            var itemFilterService = serviceManager.GetService<IItemFilterService>();
+            
+            if (plugin == null || itemFilterService == null)
+            {
+                ImGui.Text("Services not available");
+                return;
+            }
 
-            var directoryToOpen = Directory.Exists(customConfigDirectory)
-                ? customConfigDirectory
-                : configDirectory;
+            ImGui.Separator();
+            
+            if (ImGui.Button("Open Filter Folder"))
+            {
+                OpenFilterFolder(plugin);
+            }
 
-            Process.Start("explorer.exe", directoryToOpen);
+            if (ImGui.Button("Reload Rules"))
+            {
+                ReloadRules(itemFilterService);
+            }
+
+            ImGui.Separator();
+            ImGui.Text("Rule Files\nFiles are loaded in order, so easier to process (common item queries hit more often that others) rule sets should be loaded first.");
+            ImGui.Separator();
+
+            if (ImGui.BeginTable("RulesTable", 3, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable))
+            {
+                ImGui.TableSetupColumn("Drag", ImGuiTableColumnFlags.WidthFixed, 40);
+                ImGui.TableSetupColumn("Toggle", ImGuiTableColumnFlags.WidthFixed, 50);
+                ImGui.TableSetupColumn("File", ImGuiTableColumnFlags.None);
+                ImGui.TableHeadersRow();
+
+                DrawRulesTable(plugin.Settings, itemFilterService);
+
+                ImGui.EndTable();
+            }
         }
-
-        if (ImGui.Button("Reload Rules"))
-            LoadAndApplyRules();
-
-        ImGui.Separator();
-        ImGui.Text(
-            "Rule Files\nFiles are loaded in order, so easier to process (common item queries hit more often that others) rule sets should be loaded first.");
-        ImGui.Separator();
-
-        if (ImGui.BeginTable("RulesTable", 3, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable))
+        catch (Exception ex)
         {
-            ImGui.TableSetupColumn("Drag", ImGuiTableColumnFlags.WidthFixed, 40);
-            ImGui.TableSetupColumn("Toggle", ImGuiTableColumnFlags.WidthFixed, 50);
-            ImGui.TableSetupColumn("File", ImGuiTableColumnFlags.None);
-            ImGui.TableHeadersRow();
+            DebugWindow.LogError($"[RulesDisplay] Error in DrawSettings: {ex.Message}");
+            ImGui.Text($"Error: {ex.Message}");
+        }
+    }
 
-            var reorderPending = false;
-            var pendingSrcIndex = -1;
-            var pendingNewIndex = -1;
+    private static void OpenFilterFolder(PickIt plugin)
+    {
+        try
+        {
+            var configDirectory = GetPickitConfigFileDirectory(plugin);
+            Process.Start("explorer.exe", configDirectory);
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[RulesDisplay] Failed to open filter folder: {ex.Message}");
+        }
+    }
 
-            var rules = Main.Settings.PickitRules;
+    private static void ReloadRules(IItemFilterService itemFilterService)
+    {
+        try
+        {
+            itemFilterService.ReloadFilters();
+            DebugWindow.LogMsg("[RulesDisplay] Rules reloaded");
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[RulesDisplay] Failed to reload rules: {ex.Message}");
+        }
+    }
+
+    private static void DrawRulesTable(PickItSettings settings, IItemFilterService itemFilterService)
+    {
+        try
+        {
+            var rules = settings.PickitRules ?? new System.Collections.Generic.List<PickitRule>();
+            
             for (var i = 0; i < rules.Count; i++)
             {
                 var rule = rules[i];
                 ImGui.TableNextRow();
 
+                // Drag column
                 ImGui.TableSetColumnIndex(0);
                 ImGui.PushID($"drag_{rule.Location}");
 
@@ -86,7 +128,7 @@ public class RulesDisplay
                         var movedRule = rules[payload.Value];
                         rules.RemoveAt(payload.Value);
                         rules.Insert(i, movedRule);
-                        LoadAndApplyRules();
+                        itemFilterService.ReloadFilters();
                     }
 
                     ImGui.EndDragDropTarget();
@@ -94,60 +136,82 @@ public class RulesDisplay
 
                 ImGui.PopID();
 
+                // Toggle column
                 ImGui.TableSetColumnIndex(1);
                 ImGui.PushID($"toggle_{rule.Location}");
                 var enabled = rule.Enabled;
                 if (ImGui.Checkbox("", ref enabled))
                 {
                     rule.Enabled = enabled;
-                    LoadAndApplyRules();
+                    itemFilterService.ReloadFilters();
                 }
 
                 ImGui.PopID();
 
+                // File column
                 ImGui.TableSetColumnIndex(2);
                 ImGui.PushID(rule.Location);
 
-                var directoryPart =
-                    Path.GetDirectoryName(rule.Location)?.Replace("\\", "/") ?? "";
-                var fileName = Path.GetFileName(rule.Location);
-                var fileFullPath = Path.Combine(GetPickitConfigFileDirectory(), rule.Location);
-
-                var cellWidth = ImGui.GetContentRegionAvail().X;
-
-                ImGui.InvisibleButton($"FileCell_{rule.Location}", new Vector2(cellWidth, ImGui.GetFrameHeight()));
-
-                ImGui.SameLine();
-
-                StartContextMenu(fileName, fileFullPath, $"FileCell_{rule.Location}");
-
-                var textPos = ImGui.GetItemRectMin();
-                ImGui.SetCursorScreenPos(textPos);
-
-                if (!string.IsNullOrEmpty(directoryPart))
-                {
-                    ImGui.TextColored(
-                        new Vector4(0.4f, 0.7f, 1.0f, 1.0f), directoryPart + "/"
-                    );
-                    ImGui.SameLine(0, 0);
-                    ImGui.Text(fileName);
-                }
-                else
-                {
-                    ImGui.Text(fileName);
-                }
+                DrawFileColumn(rule);
 
                 ImGui.PopID();
             }
-
-            ImGui.EndTable();
         }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[RulesDisplay] Error drawing rules table: {ex.Message}");
+        }
+    }
 
-        void StartContextMenu(string fileName, string fileFullPath, string contextMenuId)
+    private static void DrawFileColumn(PickitRule rule)
+    {
+        try
+        {
+            var directoryPart = Path.GetDirectoryName(rule.Location)?.Replace("\\", "/") ?? "";
+            var fileName = Path.GetFileName(rule.Location);
+            var serviceManager = PickItServiceManager.Instance;
+            var plugin = serviceManager.GetService<PickIt>();
+            
+            if (plugin == null) return;
+            
+            var fileFullPath = Path.Combine(GetPickitConfigFileDirectory(plugin), rule.Location);
+
+            var cellWidth = ImGui.GetContentRegionAvail().X;
+
+            ImGui.InvisibleButton($"FileCell_{rule.Location}", new Vector2(cellWidth, ImGui.GetFrameHeight()));
+
+            ImGui.SameLine();
+
+            StartContextMenu(fileName, fileFullPath, $"FileCell_{rule.Location}");
+
+            var textPos = ImGui.GetItemRectMin();
+            ImGui.SetCursorScreenPos(textPos);
+
+            if (!string.IsNullOrEmpty(directoryPart))
+            {
+                ImGui.TextColored(new Vector4(0.4f, 0.7f, 1.0f, 1.0f), directoryPart + "/");
+                ImGui.SameLine(0, 0);
+                ImGui.Text(fileName);
+            }
+            else
+            {
+                ImGui.Text(fileName);
+            }
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[RulesDisplay] Error drawing file column: {ex.Message}");
+        }
+    }
+
+    private static void StartContextMenu(string fileName, string fileFullPath, string contextMenuId)
+    {
+        try
         {
             if (ImGui.BeginPopupContextItem(contextMenuId))
             {
                 if (ImGui.MenuItem("Open"))
+                {
                     try
                     {
                         Process.Start(new ProcessStartInfo
@@ -158,91 +222,46 @@ public class RulesDisplay
                     }
                     catch (Exception ex)
                     {
-                        DebugWindow.LogError(
-                            $"[DrawSettings] Failed to open file: {ex.Message}",
-                            10
-                        );
+                        DebugWindow.LogError($"[RulesDisplay] Failed to open file: {ex.Message}");
                     }
+                }
 
                 ImGui.EndPopup();
             }
         }
-    }
-    private static string GetPickitConfigFileDirectory()
-    {
-        var pickitConfigFileDirectory = Main.ConfigDirectory;
-        if (!string.IsNullOrEmpty(Main.Settings.CustomConfigDir))
+        catch (Exception ex)
         {
-            var customConfigFileDirectory = Path.Combine(Path.GetDirectoryName(Main.ConfigDirectory),
-                Main.Settings.CustomConfigDir);
-            if (Directory.Exists(customConfigFileDirectory))
-                pickitConfigFileDirectory = customConfigFileDirectory;
-            else
-                DebugWindow.LogError("[Ground Items] Custom config folder does not exist.", 10);
+            DebugWindow.LogError($"[RulesDisplay] Error in context menu: {ex.Message}");
         }
-
-        return pickitConfigFileDirectory;
     }
 
-    private static ItemFilter LoadItemFilterWithRetry(string rulePath)
+    private static string GetPickitConfigFileDirectory(PickIt plugin)
     {
-        const int maxRetries = 10;
-        var attempt = 0;
-        while (true)
-            try
-            {
-                return ItemFilter.LoadFromPath(rulePath);
-            }
-            catch (IOException ex)
-            {
-                attempt++;
-                if (attempt >= maxRetries)
-                    throw new IOException($"Failed to load file after {maxRetries} attempts: {rulePath}", ex);
-                Thread.Sleep(100);
-            }
-    }
-
-    public static void LoadAndApplyRules()
-    {
-        var pickitConfigFileDirectory = GetPickitConfigFileDirectory();
-        var existingRules = Main.Settings.PickitRules;
         try
         {
-            var diskFiles = new DirectoryInfo(pickitConfigFileDirectory)
-                .GetFiles("*.ifl", SearchOption.AllDirectories)
-                .ToList();
-
-            var newRules = diskFiles
-                .Select(fileInfo => new PickitRule(
-                    fileInfo.Name,
-                    Path.GetRelativePath(pickitConfigFileDirectory, fileInfo.FullName),
-                    false))
-                .ExceptBy(existingRules.Select(rule => rule.Location), groundRule => groundRule.Location)
-                .ToList();
-
-            foreach (var groundRule in existingRules)
+            var pickitConfigFileDirectory = plugin.ConfigDirectory;
+            if (!string.IsNullOrEmpty(plugin.Settings.CustomConfigDir))
             {
-                var fullPath = Path.Combine(pickitConfigFileDirectory, groundRule.Location);
-                if (File.Exists(fullPath))
-                    newRules.Add(groundRule);
+                var customConfigFileDirectory = Path.Combine(
+                    Path.GetDirectoryName(plugin.ConfigDirectory) ?? string.Empty,
+                    plugin.Settings.CustomConfigDir);
+                    
+                if (Directory.Exists(customConfigFileDirectory))
+                {
+                    pickitConfigFileDirectory = customConfigFileDirectory;
+                }
                 else
-                    DebugWindow.LogError($"[LoadAndApplyRules] File '{groundRule.Name}' not found.", 10);
+                {
+                    DebugWindow.LogError("[RulesDisplay] Custom config folder does not exist.");
+                }
             }
 
-            Main.ItemFilters = newRules
-                .Where(rule => rule.Enabled)
-                .Select(rule =>
-                {
-                    var rulePath = Path.Combine(pickitConfigFileDirectory, rule.Location);
-                    return LoadItemFilterWithRetry(rulePath);
-                })
-                .ToList();
-
-            Main.Settings.PickitRules = newRules;
+            return pickitConfigFileDirectory;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            DebugWindow.LogError($"[LoadAndApplyRules] An error occurred while loading rule files: {e.Message}", 10);
+            DebugWindow.LogError($"[RulesDisplay] Error getting config directory: {ex.Message}");
+            return plugin.ConfigDirectory;
         }
     }
-}
+} 

@@ -88,7 +88,7 @@ public class FilterNode
 {
     public void Render()
     {
-        RulesDisplay.DrawSettings();
+                    RulesDisplay.DrawSettings();
     }
 }
 
