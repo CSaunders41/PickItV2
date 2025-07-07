@@ -68,11 +68,6 @@ public interface IChestService : IDisposable
     Task<bool> InteractWithChestAsync(LabelOnGround chest);
 }
 
-public interface IRenderService : IDisposable
-{
-    void RenderAll();
-}
-
 public enum WorkMode
 {
     Stop,

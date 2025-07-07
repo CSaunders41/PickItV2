@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using SharpDX;
 
 namespace PickIt.Services;
 
-public interface IRenderService
+public interface IRenderService : IDisposable
 {
     void RenderInventoryOverlay();
     void RenderDebugHighlights();
