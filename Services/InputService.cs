@@ -221,31 +221,38 @@ public class InputService : IInputService, IDisposable
 
     private async Task TryRegularClick(Entity item, Element label, RectangleF? customRect)
     {
-        var position = CalculateClickPosition(label, customRect);
-        
-        if (_sinceLastClick.ElapsedMilliseconds > _settings.PauseBetweenClicks)
+        try
         {
-            if (!IsTargeted(item, label))
-            {
-                DebugWindow.LogMsg($"[InputService] Item not targeted, setting cursor position");
-                await SetCursorPositionAsync(position, item, label);
-            }
-            else
-            {
-                DebugWindow.LogMsg($"[InputService] Item is targeted, checking portal and clicking");
-                if (await CheckPortalInterference(label)) return;
-                
-                if (!IsTargeted(item, label))
-                {
-                    DebugWindow.LogMsg($"[InputService] Target lost after portal check");
-                    await TaskUtils.NextFrame();
-                    return;
-                }
+            // Calculate click position
+            var position = CalculateClickPosition(label, customRect);
+            DebugWindow.LogMsg($"[InputService] Calculated click position: {position}");
 
-                DebugWindow.LogMsg($"[InputService] Executing left click");
-                LeftClick();
-                _sinceLastClick.Restart();
+            // Check timing delay
+            if (_sinceLastClick.ElapsedMilliseconds <= _settings.PauseBetweenClicks)
+            {
+                DebugWindow.LogMsg($"[InputService] Waiting for click delay ({_sinceLastClick.ElapsedMilliseconds}ms < {_settings.PauseBetweenClicks}ms)");
+                return;
             }
+
+            // Simple approach: Set cursor position and click immediately
+            DebugWindow.LogMsg($"[InputService] Setting cursor position to {position}");
+            SetCursorPos(position);
+            
+            // Small delay to ensure cursor position is set
+            await Task.Delay(25);
+            
+            // Click the item
+            DebugWindow.LogMsg($"[InputService] Executing left click at {position}");
+            LeftClick();
+            
+            // Reset timing
+            _sinceLastClick.Restart();
+            
+            DebugWindow.LogMsg($"[InputService] Click completed successfully for item at distance {item.DistancePlayer}");
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[InputService] Error in TryRegularClick: {ex.Message}");
         }
     }
 
@@ -257,21 +264,6 @@ public class InputService : IInputService, IDisposable
         var randomOffset = labelRect.ClickRandomNum(5, 3);
         var windowOffset = _gameController.Window.GetWindowRectangleTimeCache.TopLeft.ToVector2Num();
         return randomOffset + windowOffset;
-    }
-
-    private async Task SetCursorPositionAsync(Vector2 position, Entity item, Element label)
-    {
-        try
-        {
-            DebugWindow.LogMsg($"[InputService] Setting cursor position: {position}");
-            SetCursorPos(position);
-            using var cancellationToken = new CancellationTokenSource(TimeSpan.FromMilliseconds(60));
-            await TaskUtils.CheckEveryFrame(() => IsTargeted(item, label), cancellationToken.Token);
-        }
-        catch (Exception ex)
-        {
-            DebugWindow.LogError($"[InputService] Error setting cursor position: {ex.Message}");
-        }
     }
 
     private async Task<bool> CheckPortalInterference(Element label)
@@ -344,27 +336,6 @@ public class InputService : IInputService, IDisposable
         catch (Exception ex)
         {
             DebugWindow.LogError($"[InputService] Error checking if player is moving: {ex.Message}");
-            return false;
-        }
-    }
-
-    private static bool IsTargeted(Entity item, Element label)
-    {
-        if (item == null) return false;
-        
-        try
-        {
-            var targetable = item.GetComponent<Targetable>();
-            if (targetable?.isTargeted is { } isTargeted)
-            {
-                return isTargeted;
-            }
-
-            return label is { HasShinyHighlight: true };
-        }
-        catch (Exception ex)
-        {
-            DebugWindow.LogError($"[InputService] Error checking if targeted: {ex.Message}");
             return false;
         }
     }
