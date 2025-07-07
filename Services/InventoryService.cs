@@ -286,6 +286,6 @@ public class InventoryService : IInventoryService, IDisposable
         if (_disposed) return;
         
         _disposed = true;
-        _inventorySlots?.Dispose();
+        // Note: CachedValue doesn't implement IDisposable, so we don't dispose it
     }
 } 

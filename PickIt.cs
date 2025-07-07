@@ -145,7 +145,7 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
         
         // Dependent services
         _chestService = new ChestService(GameController, Settings, _itemFilterService, _inputService);
-        _renderService = new RenderService(GameController, Settings, _inventoryService, _itemFilterService);
+        _renderService = new RenderService(GameController, Settings, _inventoryService, _itemFilterService, Graphics);
         
         // Main orchestrator service
         _pickItService = new PickItService(

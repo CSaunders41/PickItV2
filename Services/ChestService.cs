@@ -191,6 +191,6 @@ public class ChestService : IChestService, IDisposable
         if (_disposed) return;
         
         _disposed = true;
-        _availableChests?.Dispose();
+        // Note: CachedValue doesn't implement IDisposable, so we don't dispose it
     }
 } 

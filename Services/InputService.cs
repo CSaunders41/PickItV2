@@ -9,6 +9,7 @@ using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.Elements;
 using ExileCore.PoEMemory.MemoryObjects;
 using ExileCore.Shared;
+using ExileCore.Shared.Enums;
 using ExileCore.Shared.Helpers;
 using SharpDX;
 using System.Numerics;

@@ -110,7 +110,7 @@ public class PickItService : IPickItService, IDisposable
         }
     }
 
-    public async Task<bool> RunPickupIterationAsync()
+    public async SyncTask<bool> RunPickupIterationAsync()
     {
         ThrowIfDisposed();
         
@@ -282,7 +282,7 @@ public class PickItService : IPickItService, IDisposable
         try
         {
             _pickupTask = null;
-            _availableItems?.Dispose();
+            // Note: CachedValue doesn't implement IDisposable, so we don't dispose it
         }
         catch (Exception ex)
         {

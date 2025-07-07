@@ -13,18 +13,21 @@ public class RenderService : IRenderService, IDisposable
     private readonly PickItSettings _settings;
     private readonly IInventoryService _inventoryService;
     private readonly IItemFilterService _itemFilterService;
+    private readonly Graphics _graphics;
     private volatile bool _disposed = false;
 
     public RenderService(
         GameController gameController,
         PickItSettings settings,
         IInventoryService inventoryService,
-        IItemFilterService itemFilterService)
+        IItemFilterService itemFilterService,
+        Graphics graphics)
     {
         _gameController = gameController ?? throw new ArgumentNullException(nameof(gameController));
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         _inventoryService = inventoryService ?? throw new ArgumentNullException(nameof(inventoryService));
         _itemFilterService = itemFilterService ?? throw new ArgumentNullException(nameof(itemFilterService));
+        _graphics = graphics ?? throw new ArgumentNullException(nameof(graphics));
     }
 
     public void RenderAll()
@@ -79,7 +82,7 @@ public class RenderService : IRenderService, IDisposable
                 viewTopLeftY - backdropPadding,
                 gridWidth + backdropPadding * 2,
                 gridHeight + backdropPadding * 2);
-            _gameController.Graphics.DrawBox(backgroundRect, renderSettings.BackgroundColor.Value);
+            _graphics.DrawBox(backgroundRect, renderSettings.BackgroundColor.Value);
             
             // Track item bounds for outline drawing
             var itemBounds = new Dictionary<int, (int MinX, int MinY, int MaxX, int MaxY)>();
@@ -98,7 +101,7 @@ public class RenderService : IRenderService, IDisposable
                     var cellY = viewTopLeftY + row * (cellSize + cellSpacing);
                     var cellRect = new RectangleF(cellX, cellY, cellSize, cellSize);
                     
-                    _gameController.Graphics.DrawBox(cellRect, cellColor);
+                    _graphics.DrawBox(cellRect, cellColor);
                     
                     // Track item bounds for outline
                     var itemId = inventorySlots[row, col];
@@ -150,7 +153,7 @@ public class RenderService : IRenderService, IDisposable
         
         try
         {
-            _gameController.Graphics.DrawFrame(item.QueriedItem.ClientRect, color, 5);
+            _graphics.DrawFrame(item.QueriedItem.ClientRect, color, 5);
         }
         catch (Exception ex)
         {
@@ -239,7 +242,7 @@ public class RenderService : IRenderService, IDisposable
     {
         try
         {
-            var graphics = _gameController.Graphics;
+            var graphics = _graphics;
             
             // Top
             graphics.DrawBox(new RectangleF(outerRect.Left, outerRect.Top, outerRect.Width, thickness), color);

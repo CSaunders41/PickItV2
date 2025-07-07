@@ -179,6 +179,6 @@ public class PortalService : IPortalService, IDisposable
         if (_disposed) return;
         
         _disposed = true;
-        _portalLabel?.Dispose();
+        // Note: CachedValue doesn't implement IDisposable, so we don't dispose it
     }
 } 
