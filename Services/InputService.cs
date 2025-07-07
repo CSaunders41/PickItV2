@@ -98,7 +98,7 @@ public class InputService : IInputService, IDisposable
             {
                 if (!IsLabelClickable(label, customRect))
                 {
-                    return false;
+                    return true; // Return true like original - let caller handle
                 }
 
                 if (!_settings.IgnoreMoving && IsPlayerMoving())
@@ -112,28 +112,25 @@ public class InputService : IInputService, IDisposable
 
                 if (_settings.UseMagicInput)
                 {
-                    if (await TryMagicInputClick(item))
-                    {
-                        tryCount++;
-                    }
+                    DebugWindow.LogMsg($"[InputService] Attempting MagicInput click on item at distance {item.DistancePlayer}");
+                    await TryMagicInputClick(item);
                 }
                 else
                 {
-                    if (await TryRegularClick(item, label, customRect))
-                    {
-                        tryCount++;
-                    }
+                    DebugWindow.LogMsg($"[InputService] Attempting regular click on item at distance {item.DistancePlayer}");
+                    await TryRegularClick(item, label, customRect);
                 }
 
+                tryCount++; // Always increment, like original
                 await TaskUtils.NextFrame();
             }
 
-            return true;
+            return true; // Always return true like original
         }
         catch (Exception ex)
         {
             DebugWindow.LogError($"[InputService] Error clicking item: {ex.Message}");
-            return false;
+            return true; // Return true even on error, like original
         }
     }
 
@@ -198,7 +195,7 @@ public class InputService : IInputService, IDisposable
         }
     }
 
-    private async Task<bool> TryMagicInputClick(Entity item)
+    private async Task TryMagicInputClick(Entity item)
     {
         if (_settings.UnclickLeftMouseButton && IsKeyDown(Keys.LButton))
         {
@@ -208,68 +205,51 @@ public class InputService : IInputService, IDisposable
 
         if (_sinceLastClick.ElapsedMilliseconds > _settings.PauseBetweenClicks)
         {
-            if (await TryInvokeMagicInput(item))
+            try
             {
+                // Direct call like original - no error handling that could break flow
+                var magicInputMethod = _gameController.PluginBridge.GetMethod<Action<Entity, uint>>("MagicInput.CastSkillWithTarget");
+                magicInputMethod(item, 0x400);
                 _sinceLastClick.Restart();
-                return true;
+            }
+            catch (Exception ex)
+            {
+                DebugWindow.LogError($"[InputService] MagicInput error: {ex.Message}");
             }
         }
-
-        return false;
     }
 
-    private async Task<bool> TryRegularClick(Entity item, Element label, RectangleF? customRect)
+    private async Task TryRegularClick(Entity item, Element label, RectangleF? customRect)
     {
-        if (_sinceLastClick.ElapsedMilliseconds <= _settings.PauseBetweenClicks)
-        {
-            return false;
-        }
-
         var position = CalculateClickPosition(label, customRect);
         
-        if (!IsTargeted(item, label))
+        if (_sinceLastClick.ElapsedMilliseconds > _settings.PauseBetweenClicks)
         {
-            return await SetCursorPositionAsync(position, item, label);
-        }
-
-        if (await CheckPortalInterference(label))
-        {
-            return true;
-        }
-
-        if (!IsTargeted(item, label))
-        {
-            await TaskUtils.NextFrame();
-            return false;
-        }
-
-        LeftClick();
-        _sinceLastClick.Restart();
-        return true;
-    }
-
-    private async Task<bool> TryInvokeMagicInput(Entity item)
-    {
-        try
-        {
-            var magicInputMethod = _gameController.PluginBridge.GetMethod<Action<Entity, uint>>("MagicInput.CastSkillWithTarget");
-            if (magicInputMethod != null)
+            if (!IsTargeted(item, label))
             {
-                magicInputMethod(item, 0x400);
-                return true;
+                DebugWindow.LogMsg($"[InputService] Item not targeted, setting cursor position");
+                await SetCursorPositionAsync(position, item, label);
             }
             else
             {
-                DebugWindow.LogError("[InputService] MagicInput plugin not available");
-                return false;
+                DebugWindow.LogMsg($"[InputService] Item is targeted, checking portal and clicking");
+                if (await CheckPortalInterference(label)) return;
+                
+                if (!IsTargeted(item, label))
+                {
+                    DebugWindow.LogMsg($"[InputService] Target lost after portal check");
+                    await TaskUtils.NextFrame();
+                    return;
+                }
+
+                DebugWindow.LogMsg($"[InputService] Executing left click");
+                LeftClick();
+                _sinceLastClick.Restart();
             }
         }
-        catch (Exception ex)
-        {
-            DebugWindow.LogError($"[InputService] Error invoking MagicInput: {ex.Message}");
-            return false;
-        }
     }
+
+
 
     private Vector2 CalculateClickPosition(Element label, RectangleF? customRect)
     {
@@ -279,22 +259,18 @@ public class InputService : IInputService, IDisposable
         return randomOffset + windowOffset;
     }
 
-    private async Task<bool> SetCursorPositionAsync(Vector2 position, Entity item, Element label)
+    private async Task SetCursorPositionAsync(Vector2 position, Entity item, Element label)
     {
         try
         {
+            DebugWindow.LogMsg($"[InputService] Setting cursor position: {position}");
             SetCursorPos(position);
             using var cancellationToken = new CancellationTokenSource(TimeSpan.FromMilliseconds(60));
-            return await TaskUtils.CheckEveryFrame(() => IsTargeted(item, label), cancellationToken.Token);
-        }
-        catch (OperationCanceledException)
-        {
-            return false;
+            await TaskUtils.CheckEveryFrame(() => IsTargeted(item, label), cancellationToken.Token);
         }
         catch (Exception ex)
         {
             DebugWindow.LogError($"[InputService] Error setting cursor position: {ex.Message}");
-            return false;
         }
     }
 
