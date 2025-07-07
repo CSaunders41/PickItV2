@@ -22,4 +22,7 @@
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Archive/**" />
+  </ItemGroup>
 </Project>

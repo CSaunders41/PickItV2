@@ -1,5 +1,10 @@
 using ExileCore;
+using ExileCore.PoEMemory.Components;
+using ExileCore.PoEMemory.Elements;
+using ExileCore.PoEMemory.MemoryObjects;
 using ExileCore.Shared;
+using ExileCore.Shared.Cache;
+using ExileCore.Shared.Enums;
 using ExileCore.Shared.Helpers;
 using ItemFilterLibrary;
 using PickIt.Services;
@@ -7,12 +12,20 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ExileCore.PoEMemory;
+using SharpDX;
+using SDxVector2 = SharpDX.Vector2;
+using Vector2 = System.Numerics.Vector2;
+using Vector3 = System.Numerics.Vector3;
 
 namespace PickIt;
 
-public class PickIt : BaseSettingsPlugin<PickItSettings>
+public partial class PickIt : BaseSettingsPlugin<PickItSettings>
 {
     // Services
     private IPickItService _pickItService;
@@ -263,41 +276,40 @@ public class PickIt : BaseSettingsPlugin<PickItSettings>
         }
     }
 
-    protected override void Dispose(bool disposing)
+    public override void Dispose()
     {
         if (_disposed) return;
         
-        if (disposing)
+        try
         {
-            try
-            {
-                // Stop any running tasks
-                _pickItService?.StopPickupTask();
-                
-                // Dispose services
-                _pickItService?.Dispose();
-                _inventoryService?.Dispose();
-                _itemFilterService?.Dispose();
-                _inputService?.Dispose();
-                _renderService?.Dispose();
-                _chestService?.Dispose();
-                _portalService?.Dispose();
-                
-                // Clear service manager
-                _serviceManager?.Clear();
-                
-                _servicesInitialized = false;
-                
-                DebugWindow.LogMsg("[PickIt] Successfully disposed all services");
-            }
-            catch (Exception ex)
-            {
-                DebugWindow.LogError($"[PickIt] Error during disposal: {ex.Message}");
-            }
+            // Stop any running tasks
+            _pickItService?.StopPickupTask();
+            
+            // Dispose services
+            _pickItService?.Dispose();
+            _inventoryService?.Dispose();
+            _itemFilterService?.Dispose();
+            _inputService?.Dispose();
+            _renderService?.Dispose();
+            _chestService?.Dispose();
+            _portalService?.Dispose();
+            
+            // Clear service manager
+            _serviceManager?.Clear();
+            
+            _servicesInitialized = false;
+            
+            DebugWindow.LogMsg("[PickIt] Successfully disposed all services");
         }
-        
-        _disposed = true;
-        base.Dispose(disposing);
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[PickIt] Error during disposal: {ex.Message}");
+        }
+        finally
+        {
+            _disposed = true;
+            base.Dispose();
+        }
     }
 
     // Public API for external access

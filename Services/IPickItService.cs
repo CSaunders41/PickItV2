@@ -3,6 +3,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ExileCore.PoEMemory.Elements;
 using ExileCore.PoEMemory.MemoryObjects;
+using ExileCore.PoEMemory.Components;
+using ExileCore.Shared.Helpers;
+using ItemFilterLibrary;
+using SharpDX;
+using Vector2 = System.Numerics.Vector2;
 
 namespace PickIt.Services;
 

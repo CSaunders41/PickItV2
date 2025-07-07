@@ -9,6 +9,7 @@ using ExileCore.Shared.Cache;
 using ExileCore.Shared.Helpers;
 using ItemFilterLibrary;
 using SharpDX;
+using Vector2 = System.Numerics.Vector2;
 
 namespace PickIt.Services;
 
