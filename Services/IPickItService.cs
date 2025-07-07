@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ExileCore.PoEMemory;
 using ExileCore.PoEMemory.Elements;
 using ExileCore.PoEMemory.MemoryObjects;
 using ExileCore.PoEMemory.Components;
+using ExileCore.Shared;
 using ExileCore.Shared.Helpers;
 using ItemFilterLibrary;
 using SharpDX;

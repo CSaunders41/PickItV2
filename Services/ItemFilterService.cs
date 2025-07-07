@@ -7,6 +7,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using ExileCore;
+using ExileCore.PoEMemory;
+using ExileCore.Shared;
 using ItemFilterLibrary;
 
 namespace PickIt.Services;

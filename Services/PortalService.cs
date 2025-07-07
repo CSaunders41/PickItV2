@@ -2,9 +2,11 @@ using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ExileCore;
+using ExileCore.PoEMemory;
 using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.Elements;
 using ExileCore.PoEMemory.MemoryObjects;
+using ExileCore.Shared;
 using ExileCore.Shared.Cache;
 using SharpDX;
 
