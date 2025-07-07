@@ -5,6 +5,8 @@ using System.Numerics;
 using ExileCore;
 using ImGuiNET;
 using PickIt.Services;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PickIt;
 
@@ -40,7 +42,18 @@ public static class RulesDisplay
             {
                 CreateDefaultFilters(plugin, itemFilterService);
             }
+            
+            ImGui.SameLine();
+            if (ImGui.Button("Test Pickup"))
+            {
+                TestPickupSettings(plugin, itemFilterService);
+            }
 
+            ImGui.Separator();
+            
+            // Show important settings status
+            ShowSettingsStatus(plugin);
+            
             ImGui.Separator();
             ImGui.Text("Rule Files\nFiles are loaded in order, so easier to process (common item queries hit more often that others) rule sets should be loaded first.");
             ImGui.Separator();
@@ -110,6 +123,101 @@ public static class RulesDisplay
         catch (Exception ex)
         {
             DebugWindow.LogError($"[RulesDisplay] Failed to create default filters: {ex.Message}");
+        }
+    }
+
+    private static void TestPickupSettings(PickIt plugin, IItemFilterService itemFilterService)
+    {
+        try
+        {
+            DebugWindow.LogMsg("=== PICKUP TEST STARTED ===");
+            
+            // Check main plugin enable state
+            DebugWindow.LogMsg($"Plugin Enabled: {plugin.Settings.Enable.Value}");
+            
+            // Check pickup key
+            DebugWindow.LogMsg($"Pickup Key: {plugin.Settings.PickUpKey.Value}");
+            
+            // Check pickup range
+            DebugWindow.LogMsg($"Pickup Range: {plugin.Settings.PickupRange.Value}");
+            
+            // Check active filters
+            var activeFilters = itemFilterService.ActiveFilters;
+            DebugWindow.LogMsg($"Active Filters Count: {activeFilters.Count}");
+            
+            if (activeFilters.Count == 0)
+            {
+                DebugWindow.LogError("NO ACTIVE FILTERS! This is likely why nothing is being picked up.");
+                DebugWindow.LogError("Solutions: 1) Enable some filter files in the table below, 2) Enable 'Pick Up Everything' setting, or 3) Click 'Create Default Filters'");
+            }
+            
+            // Check enabled rules
+            var enabledRules = plugin.Settings.PickitRules?.Where(r => r.Enabled).ToList() ?? new List<PickitRule>();
+            DebugWindow.LogMsg($"Enabled Rules Count: {enabledRules.Count}");
+            
+            foreach (var rule in enabledRules)
+            {
+                DebugWindow.LogMsg($"  - {rule.Name} ({rule.Location})");
+            }
+            
+            if (enabledRules.Count == 0)
+            {
+                DebugWindow.LogError("NO ENABLED RULES! Enable some filter files in the table below.");
+            }
+            
+            // Check pick up everything setting
+            DebugWindow.LogMsg($"Pick Up Everything: {plugin.Settings.PickUpEverything.Value}");
+            
+            if (plugin.Settings.PickUpEverything.Value)
+            {
+                DebugWindow.LogMsg("Pick Up Everything is enabled - plugin should pick up all items regardless of filters!");
+            }
+            
+            DebugWindow.LogMsg("=== PICKUP TEST COMPLETE - Check above for issues ===");
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[RulesDisplay] Error in pickup test: {ex.Message}");
+        }
+    }
+
+    private static void ShowSettingsStatus(PickIt plugin)
+    {
+        try
+        {
+            // Plugin enabled status
+            var pluginEnabled = plugin.Settings.Enable.Value;
+            var color = pluginEnabled ? new Vector4(0.0f, 1.0f, 0.0f, 1.0f) : new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+            ImGui.TextColored(color, $"Plugin Enabled: {pluginEnabled}");
+            
+            // Active filters count
+            var enabledRulesCount = plugin.Settings.PickitRules?.Count(r => r.Enabled) ?? 0;
+            var filtersColor = enabledRulesCount > 0 ? new Vector4(0.0f, 1.0f, 0.0f, 1.0f) : new Vector4(1.0f, 0.6f, 0.0f, 1.0f);
+            ImGui.TextColored(filtersColor, $"Enabled Filter Files: {enabledRulesCount}");
+            
+            // Pick up everything status
+            var pickupEverything = plugin.Settings.PickUpEverything.Value;
+            if (pickupEverything)
+            {
+                ImGui.TextColored(new Vector4(1.0f, 1.0f, 0.0f, 1.0f), "PICK UP EVERYTHING: ON");
+            }
+            
+            // Pickup key
+            ImGui.Text($"Pickup Key: {plugin.Settings.PickUpKey.Value}");
+            
+            // Quick warnings
+            if (!pluginEnabled)
+            {
+                ImGui.TextColored(new Vector4(1.0f, 0.0f, 0.0f, 1.0f), "⚠️ Plugin is DISABLED - enable it in the main settings!");
+            }
+            else if (enabledRulesCount == 0 && !pickupEverything)
+            {
+                ImGui.TextColored(new Vector4(1.0f, 0.6f, 0.0f, 1.0f), "⚠️ No filters enabled - nothing will be picked up!");
+            }
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[RulesDisplay] Error showing settings status: {ex.Message}");
         }
     }
 

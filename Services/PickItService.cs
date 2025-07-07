@@ -116,13 +116,21 @@ public class PickItService : IPickItService, IDisposable
         
         try
         {
-            if (!_gameController.Window.IsForeground()) return true;
+            if (!_gameController.Window.IsForeground()) 
+            {
+                DebugWindow.LogMsg("[PickItService] Window not in foreground, skipping pickup");
+                return true;
+            }
 
             var workMode = _inputService.GetCurrentWorkMode();
+            DebugWindow.LogMsg($"[PickItService] Current work mode: {workMode}");
+            
             if (workMode == WorkMode.Stop) return true;
 
             var itemsToPickup = GetItemsToPickup(true);
             var nearestItem = itemsToPickup.FirstOrDefault();
+            
+            DebugWindow.LogMsg($"[PickItService] Found {itemsToPickup.Count()} items to pickup. Nearest: {nearestItem?.BaseName ?? "None"}");
 
             // Check if we should process chests first
             if (_settings.ChestSettings.ClickChests)
@@ -134,6 +142,7 @@ public class PickItService : IPickItService, IDisposable
 
                 if (nearestChest != null && _chestService.ShouldTargetChest(nearestChest, nearestItem))
                 {
+                    DebugWindow.LogMsg($"[PickItService] Targeting chest at distance {nearestChest.ItemOnGround.DistancePlayer}");
                     return await _chestService.InteractWithChestAsync(nearestChest);
                 }
             }
@@ -144,14 +153,25 @@ public class PickItService : IPickItService, IDisposable
                 var shouldPickup = workMode == WorkMode.Manual || 
                     (workMode == WorkMode.Lazy && ShouldLazyLoot(nearestItem));
 
+                DebugWindow.LogMsg($"[PickItService] Should pickup {nearestItem.BaseName}? {shouldPickup} (workMode: {workMode})");
+
                 if (shouldPickup)
                 {
                     nearestItem.AttemptedPickups++;
-                    return await PickupItemAsync(
+                    DebugWindow.LogMsg($"[PickItService] Attempting to pickup {nearestItem.BaseName} (attempt #{nearestItem.AttemptedPickups})");
+                    
+                    var result = await PickupItemAsync(
                         nearestItem.QueriedItem.Entity,
                         nearestItem.QueriedItem.Label,
                         nearestItem.QueriedItem.ClientRect);
+                        
+                    DebugWindow.LogMsg($"[PickItService] Pickup result for {nearestItem.BaseName}: {result}");
+                    return result;
                 }
+            }
+            else
+            {
+                DebugWindow.LogMsg("[PickItService] No items found to pickup");
             }
 
             return true;

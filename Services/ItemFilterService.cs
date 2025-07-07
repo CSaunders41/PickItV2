@@ -51,17 +51,51 @@ public class ItemFilterService : IItemFilterService, IDisposable
     {
         ThrowIfDisposed();
         
-        if (item == null) return false;
+        if (item == null) 
+        {
+            DebugWindow.LogMsg("[ItemFilterService] Item is null, not picking up");
+            return false;
+        }
         
         try
         {
             // Check if picking up everything
-            if (_settings.PickUpEverything) return true;
+            if (_settings.PickUpEverything) 
+            {
+                DebugWindow.LogMsg($"[ItemFilterService] PickUpEverything enabled, picking up {item.BaseName}");
+                return true;
+            }
             
             _filtersLock.EnterReadLock();
             try
             {
-                return _activeFilters.Any(filter => filter.Matches(item));
+                var activeFiltersCount = _activeFilters.Count;
+                DebugWindow.LogMsg($"[ItemFilterService] Checking {item.BaseName} against {activeFiltersCount} active filters");
+                
+                if (activeFiltersCount == 0)
+                {
+                    DebugWindow.LogMsg("[ItemFilterService] No active filters loaded! Item will not be picked up.");
+                    return false;
+                }
+                
+                foreach (var filter in _activeFilters)
+                {
+                    try
+                    {
+                        if (filter.Matches(item))
+                        {
+                            DebugWindow.LogMsg($"[ItemFilterService] {item.BaseName} matched filter, will pickup");
+                            return true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DebugWindow.LogError($"[ItemFilterService] Error checking filter match for {item.BaseName}: {ex.Message}");
+                    }
+                }
+                
+                DebugWindow.LogMsg($"[ItemFilterService] {item.BaseName} did not match any filters, not picking up");
+                return false;
             }
             finally
             {
@@ -126,6 +160,8 @@ public class ItemFilterService : IItemFilterService, IDisposable
         try
         {
             var configDirectory = GetConfigDirectory();
+            DebugWindow.LogMsg($"[ItemFilterService] Loading filters from directory: {configDirectory}");
+            
             if (!Directory.Exists(configDirectory))
             {
                 DebugWindow.LogError($"[ItemFilterService] Config directory does not exist: {configDirectory}");
@@ -141,13 +177,20 @@ public class ItemFilterService : IItemFilterService, IDisposable
             try
             {
                 _activeFilters = newFilters;
+                DebugWindow.LogMsg($"[ItemFilterService] Successfully loaded {_activeFilters.Count} active filters");
+                
+                // Log which filters are active
+                foreach (var filter in _activeFilters)
+                {
+                    DebugWindow.LogMsg($"[ItemFilterService] Active filter loaded: {filter.GetType().Name}");
+                }
             }
             finally
             {
                 _filtersLock.ExitWriteLock();
             }
             
-            DebugWindow.LogMsg($"[ItemFilterService] Loaded {newFilters.Count} filters");
+            DebugWindow.LogMsg($"[ItemFilterService] Filter loading complete. Total active filters: {newFilters.Count}");
         }
         catch (Exception ex)
         {
@@ -355,7 +398,7 @@ ClassName == ""DivinationCard"""
                 .Select(fileInfo => new PickitRule(
                     fileInfo.Name,
                     Path.GetRelativePath(configDirectory, fileInfo.FullName),
-                    false))
+                    true)) // Enable new rules by default
                 .Where(rule => !existingRules.Any(existing => existing.Location == rule.Location))
                 .ToList();
 
