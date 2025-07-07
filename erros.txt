@@ -1,126 +1,49 @@
 Build failed:
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(15, 14)] CS0260: Missing partial modifier on
-declaration of type 'PickIt'; another partial declaration of this type exists
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\RulesDisplay.cs(11, 21)] CS0101: The namespace 'PickIt' already
-contains a definition for 'RulesDisplay'
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(35, 19)] CS0246: The type or
-namespace name 'ItemFilter' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(51, 45)] CS0246: The type or
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(16, 45)] CS0246: The type or
 namespace name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(22, 26)] CS0246: The type or
-namespace name 'ItemData' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\ChestService.cs(142, 32)] CS0246: The type or namespace
-name 'Entity' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(43, 44)] CS0246: The type or
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(56, 45)] CS0246: The type or
 namespace name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(43, 59)] CS0246: The type or
-namespace name 'RectangleF' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(57, 25)] CS0246: The type or
+namespace name 'Element' could not be found (are you missing a using directive or an assembly reference?)
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
 Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(83, 57)] CS0246: The type or namespace
 name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(11, 45)] CS0246: The type or
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PortalService.cs(26, 58)] CS0246: The type or namespace
+name 'Element' could not be found (are you missing a using directive or an assembly reference?)
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(48, 44)] CS0246: The type or
 namespace name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(11, 60)] CS0246: The type or
-namespace name 'RectangleF' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(52, 25)] CS0246: The type or
-namespace name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(24, 32)] CS0246: The type or
-namespace name 'ItemData' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(24, 5)] CS0246: The type or namespace
-name 'Vector2' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(44, 27)] CS0246: The type or
-namespace name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(44, 44)] CS0246: The type or
-namespace name 'RectangleF' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PickItService.cs(50, 58)] CS0246: The type or namespace
+name 'Element' could not be found (are you missing a using directive or an assembly reference?)
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PortalService.cs(53, 32)] CS0246: The type or namespace
+name 'Element' could not be found (are you missing a using directive or an assembly reference?)
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
 Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(137, 34)] CS0246: The type or namespace
 name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(25, 5)] CS0246: The type or namespace
-name 'Vector2' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IPickItService.cs(49, 27)] CS0246: The type or
+namespace name 'Element' could not be found (are you missing a using directive or an assembly reference?)
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
 Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(218, 59)] CS0246: The type or namespace
 name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
 Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(271, 44)] CS0246: The type or namespace
 name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PickItService.cs(28, 13)] CS0246: The type or namespace
+name 'SyncTask<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
 Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(279, 84)] CS0246: The type or namespace
 name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
 Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(298, 54)] CS0246: The type or namespace
 name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
+[7/7/2025 4:19:23 PM, C:\Program Files (x86)\Grinding Gear
 Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(372, 49)] CS0246: The type or namespace
 name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(17, 29)] CS0535: 'InputService' does
-not implement interface member 'IInputService.ClickItemAsync(Entity, Element, RectangleF?)'
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(17, 29)] CS0535: 'InputService' does
-not implement interface member 'IInputService.IsLabelClickable(Element, RectangleF?)'
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InventoryService.cs(14, 33)] CS0535: 'InventoryService'
-does not implement interface member 'IInventoryService.CanFitInventory(ItemData)'
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InventoryService.cs(14, 33)] CS0535: 'InventoryService'
-does not implement interface member 'IInventoryService.FindInventorySlot(ItemData)'
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InventoryService.cs(14, 33)] CS0738: 'InventoryService'
-does not implement interface member 'IInventoryService.FindInventorySlot(int, int)'. 'InventoryService.FindInventorySlot(int, int)'
-cannot implement 'IInventoryService.FindInventorySlot(int, int)' because it does not have the matching return type of 'Vector2?'.
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(266, 29)] CS0115: 'PickIt.Dispose(bool)': no suitable
-method found to override
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\RulesDisplay.cs(13, 24)] CS0111: Type 'RulesDisplay' already
-defines a member called 'DrawSettings' with the same parameter types
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(32, 12)] CS0111: Type 'PickIt' already defines a
-member called 'PickIt' with the same parameter types
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(37, 26)] CS0111: Type 'PickIt' already defines a
-member called 'Initialise' with the same parameter types
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(71, 25)] CS0111: Type 'PickIt' already defines a
-member called 'Tick' with the same parameter types
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(95, 26)] CS0111: Type 'PickIt' already defines a
-member called 'Render' with the same parameter types
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PortalService.cs(25, 58)] CS0246: The type or namespace
-name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PortalService.cs(52, 32)] CS0246: The type or namespace
-name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PickItService.cs(49, 58)] CS0246: The type or namespace
-name 'Element' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\ItemFilterService.cs(14, 34)] CS0738:
-'ItemFilterService' does not implement interface member 'IItemFilterService.ActiveFilters'. 'ItemFilterService.ActiveFilters' cannot
-implement 'IItemFilterService.ActiveFilters' because it does not have the matching return type of 'IReadOnlyList<ItemFilter>'.
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PortalService.cs(101, 35)] CS0246: The type or
-namespace name 'IngameState' could not be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PickItService.cs(15, 30)] CS0535: 'PickItService' does
-not implement interface member 'IPickItService.PickupItemAsync(Entity, Element, RectangleF?)'
-[7/7/2025 4:08:30 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PickItService.cs(27, 13)] CS0246: The type or namespace
-name 'SyncTask<>' could not be found (are you missing a using directive or an assembly reference?)
