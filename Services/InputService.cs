@@ -57,8 +57,8 @@ public class InputService : IInputService, IDisposable
         
         try
         {
-            if (!_gameController?.Window?.IsForeground() == true ||
-                !_settings?.Enable == true)
+            if (_gameController?.Window?.IsForeground() != true ||
+                _settings?.Enable?.Value != true)
             {
                 return WorkMode.Stop;
             }
@@ -319,8 +319,12 @@ public class InputService : IInputService, IDisposable
                 var entityListWrapper = _gameController?.EntityListWrapper;
                 if (entityListWrapper == null) return true; // If we can't check, allow lazy loot
 
-                var monsters = entityListWrapper.ValidEntitiesByType?.GetValueOrDefault(EntityType.Monster);
-                if (monsters == null) return true; // If no monsters collection, allow lazy loot
+                // Use TryGetValue instead of GetValueOrDefault for older .NET compatibility
+                var validEntitiesByType = entityListWrapper.ValidEntitiesByType;
+                if (validEntitiesByType == null || !validEntitiesByType.TryGetValue(EntityType.Monster, out var monsters))
+                {
+                    return true; // If no monsters collection, allow lazy loot
+                }
                 
                 foreach (var monster in monsters)
                 {
