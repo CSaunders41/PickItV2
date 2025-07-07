@@ -41,7 +41,14 @@ public class ChestService : IChestService, IDisposable
         
         try
         {
-            return _availableChests.Value ?? Enumerable.Empty<LabelOnGround>();
+            var chests = _availableChests?.Value;
+            if (chests == null)
+            {
+                DebugWindow.LogMsg("[ChestService] Available chests cache is null");
+                return Enumerable.Empty<LabelOnGround>();
+            }
+            
+            return chests;
         }
         catch (Exception ex)
         {

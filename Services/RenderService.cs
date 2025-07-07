@@ -165,25 +165,17 @@ public class RenderService : IRenderService, IDisposable
     {
         try
         {
-            var ingameUi = _gameController.Game.IngameState.IngameUi;
-            var renderSettings = _settings.InventoryRender;
-            
-            if (!renderSettings.IgnoreFullscreenPanels && ingameUi.FullscreenPanels.Any(x => x.IsVisible))
-                return false;
-            
-            if (!renderSettings.IgnoreLargePanels && ingameUi.LargePanels.Any(x => x.IsVisible))
-                return false;
-            
-            if (!renderSettings.IgnoreChatPanel && ingameUi.ChatTitlePanel.IsVisible)
-                return false;
-            
-            if (!renderSettings.IgnoreLeftPanel && ingameUi.OpenLeftPanel.IsVisible)
-                return false;
-            
-            if (!renderSettings.IgnoreRightPanel && ingameUi.OpenRightPanel.IsVisible)
-                return false;
-            
-            return true;
+            // Safe access to game state with null checking
+            var game = _gameController?.Game;
+            if (game == null) return false;
+
+            var ingameState = game.IngameState;
+            if (ingameState == null) return false;
+
+            var ingameUi = ingameState.IngameUi;
+            if (ingameUi == null) return false;
+
+            return ingameUi.InventoryPanel?.IsVisible == true;
         }
         catch (Exception ex)
         {

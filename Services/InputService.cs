@@ -57,18 +57,26 @@ public class InputService : IInputService, IDisposable
         
         try
         {
-            if (!_gameController.Window.IsForeground() ||
-                !_settings.Enable ||
-                GetKeyState(Keys.Escape))
+            if (!_gameController?.Window?.IsForeground() == true ||
+                !_settings?.Enable == true)
             {
                 return WorkMode.Stop;
             }
 
-            if (GetKeyState(_settings.PickUpKey.Value))
+            // Check for escape key
+            if (GetKeyState(Keys.Escape))
+            {
+                return WorkMode.Stop;
+            }
+
+            // Check for manual pickup key
+            var pickupKey = _settings?.PickUpKey?.Value;
+            if (pickupKey != null && GetKeyState(pickupKey.Value))
             {
                 return WorkMode.Manual;
             }
 
+            // Check for lazy loot mode
             if (CanLazyLoot())
             {
                 return WorkMode.Lazy;
@@ -101,16 +109,21 @@ public class InputService : IInputService, IDisposable
                     return true; // Return true like original - let caller handle
                 }
 
-                if (!_settings.IgnoreMoving && IsPlayerMoving())
+                var ignoreMoving = _settings?.IgnoreMoving == true;
+                var itemDistanceToIgnoreMoving = _settings?.ItemDistanceToIgnoreMoving?.Value ?? 0;
+                
+                if (!ignoreMoving && IsPlayerMoving())
                 {
-                    if (item.DistancePlayer > _settings.ItemDistanceToIgnoreMoving.Value)
+                    if (item.DistancePlayer > itemDistanceToIgnoreMoving)
                     {
                         await TaskUtils.NextFrame();
                         continue;
                     }
                 }
 
-                if (_settings.UseMagicInput)
+                var useMagicInput = _settings?.UseMagicInput == true;
+                
+                if (useMagicInput)
                 {
                     DebugWindow.LogMsg($"[InputService] Attempting MagicInput click on item at distance {item.DistancePlayer}");
                     await TryMagicInputClick(item);
@@ -163,7 +176,8 @@ public class InputService : IInputService, IDisposable
         
         try
         {
-            if (GetKeyState(_settings.LazyLootingPauseKey))
+            var lazyLootingPauseKey = _settings?.LazyLootingPauseKey?.Value;
+            if (lazyLootingPauseKey != null && GetKeyState(lazyLootingPauseKey.Value))
             {
                 _disableLazyLootingTill = DateTime.Now.AddSeconds(2);
             }
@@ -197,13 +211,16 @@ public class InputService : IInputService, IDisposable
 
     private async Task TryMagicInputClick(Entity item)
     {
-        if (_settings.UnclickLeftMouseButton && IsKeyDown(Keys.LButton))
+        var unclickLeftMouseButton = _settings?.UnclickLeftMouseButton == true;
+        var pauseBetweenClicks = _settings?.PauseBetweenClicks?.Value ?? 0;
+        
+        if (unclickLeftMouseButton && IsKeyDown(Keys.LButton))
         {
             _unclickedMouse = true;
             LeftUp();
         }
 
-        if (_sinceLastClick.ElapsedMilliseconds > _settings.PauseBetweenClicks)
+        if (_sinceLastClick.ElapsedMilliseconds > pauseBetweenClicks)
         {
             try
             {
@@ -228,9 +245,10 @@ public class InputService : IInputService, IDisposable
             DebugWindow.LogMsg($"[InputService] Calculated click position: {position}");
 
             // Check timing delay
-            if (_sinceLastClick.ElapsedMilliseconds <= _settings.PauseBetweenClicks)
+            var pauseBetweenClicks = _settings?.PauseBetweenClicks?.Value ?? 0;
+            if (_sinceLastClick.ElapsedMilliseconds <= pauseBetweenClicks)
             {
-                DebugWindow.LogMsg($"[InputService] Waiting for click delay ({_sinceLastClick.ElapsedMilliseconds}ms < {_settings.PauseBetweenClicks}ms)");
+                DebugWindow.LogMsg($"[InputService] Waiting for click delay ({_sinceLastClick.ElapsedMilliseconds}ms < {pauseBetweenClicks}ms)");
                 return;
             }
 
@@ -286,14 +304,23 @@ public class InputService : IInputService, IDisposable
 
     private bool CanLazyLoot()
     {
-        if (!_settings.LazyLooting) return false;
+        var lazyLooting = _settings?.LazyLooting == true;
+        if (!lazyLooting) return false;
+        
         if (_disableLazyLootingTill > DateTime.Now) return false;
         
         try
         {
-            if (_settings.NoLazyLootingWhileEnemyClose)
+            var noLazyLootingWhileEnemyClose = _settings?.NoLazyLootingWhileEnemyClose == true;
+            var pickupRange = _settings?.PickupRange?.Value ?? 100;
+            
+            if (noLazyLootingWhileEnemyClose)
             {
-                var monsters = _gameController.EntityListWrapper.ValidEntitiesByType[EntityType.Monster];
+                var entityListWrapper = _gameController?.EntityListWrapper;
+                if (entityListWrapper == null) return true; // If we can't check, allow lazy loot
+
+                var monsters = entityListWrapper.ValidEntitiesByType?.GetValueOrDefault(EntityType.Monster);
+                if (monsters == null) return true; // If no monsters collection, allow lazy loot
                 
                 foreach (var monster in monsters)
                 {
@@ -302,16 +329,22 @@ public class InputService : IInputService, IDisposable
                         !monster.IsHostile || 
                         !monster.IsAlive ||
                         monster.IsHidden || 
-                        monster.Path.Contains("ElementalSummoned"))
+                        monster.Path?.Contains("ElementalSummoned") == true)
                     {
                         continue;
                     }
 
+                    var renderComponent = monster.GetComponent<Render>();
+                    if (renderComponent == null) continue;
+
+                    var playerPos = _gameController?.Player?.PosNum;
+                    if (playerPos == null) continue;
+
                     var distance = System.Numerics.Vector3.Distance(
-                        _gameController.Player.PosNum,
-                        monster.GetComponent<Render>().PosNum);
+                        playerPos.Value,
+                        renderComponent.PosNum);
                         
-                    if (distance < _settings.PickupRange)
+                    if (distance < pickupRange)
                     {
                         return false;
                     }
@@ -331,7 +364,13 @@ public class InputService : IInputService, IDisposable
     {
         try
         {
-            return _gameController.Player.GetComponent<Actor>().isMoving;
+            var player = _gameController?.Player;
+            if (player == null) return false;
+
+            var actorComponent = player.GetComponent<Actor>();
+            if (actorComponent == null) return false;
+
+            return actorComponent.isMoving;
         }
         catch (Exception ex)
         {

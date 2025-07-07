@@ -79,11 +79,15 @@ public class PickItService : IPickItService, IDisposable
         
         try
         {
-            var items = _availableItems.Value;
-            if (items == null) return Enumerable.Empty<PickItItemData>();
+            var items = _availableItems?.Value;
+            if (items == null) 
+            {
+                DebugWindow.LogMsg("[PickItService] Available items cache is null");
+                return Enumerable.Empty<PickItItemData>();
+            }
 
             return filterAttempts 
-                ? items.Where(item => item.AttemptedPickups == 0)
+                ? items.Where(item => item?.AttemptedPickups == 0)
                 : items;
         }
         catch (Exception ex)
@@ -234,16 +238,54 @@ public class PickItService : IPickItService, IDisposable
     {
         try
         {
-            var labels = _gameController.Game.IngameState.IngameUi.ItemsOnGroundLabelElement.VisibleGroundItemLabels;
-            if (labels == null) return new List<PickItItemData>();
+            // Safe access to game state with null checking
+            var game = _gameController?.Game;
+            if (game == null)
+            {
+                DebugWindow.LogError("[PickItService] Game controller or game is null");
+                return new List<PickItItemData>();
+            }
+
+            var ingameState = game.IngameState;
+            if (ingameState == null)
+            {
+                DebugWindow.LogError("[PickItService] IngameState is null");
+                return new List<PickItItemData>();
+            }
+
+            var ingameUi = ingameState.IngameUi;
+            if (ingameUi == null)
+            {
+                DebugWindow.LogError("[PickItService] IngameUi is null");
+                return new List<PickItItemData>();
+            }
+
+            var itemsOnGroundLabelElement = ingameUi.ItemsOnGroundLabelElement;
+            if (itemsOnGroundLabelElement == null)
+            {
+                DebugWindow.LogError("[PickItService] ItemsOnGroundLabelElement is null");
+                return new List<PickItItemData>();
+            }
+
+            var labels = itemsOnGroundLabelElement.VisibleGroundItemLabels;
+            if (labels == null)
+            {
+                DebugWindow.LogError("[PickItService] VisibleGroundItemLabels is null");
+                return new List<PickItItemData>();
+            }
 
             var availableItems = new List<PickItItemData>();
             
             foreach (var label in labels)
             {
-                if (label.Entity?.DistancePlayer is not { } distance || 
-                    distance >= _settings.PickupRange ||
-                    string.IsNullOrEmpty(label.Entity?.Path))
+                if (label?.Entity == null)
+                {
+                    continue;
+                }
+
+                var distance = label.Entity.DistancePlayer;
+                if (distance >= _settings.PickupRange ||
+                    string.IsNullOrEmpty(label.Entity.Path))
                 {
                     continue;
                 }
@@ -256,7 +298,7 @@ public class PickItService : IPickItService, IDisposable
                 try
                 {
                     var itemData = new PickItItemData(label, _gameController);
-                    if (itemData.Entity == null) continue;
+                    if (itemData?.Entity == null) continue;
 
                     // Check if item should be picked up
                     if (!ShouldPickupItem(itemData)) continue;

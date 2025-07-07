@@ -93,8 +93,12 @@ public class InventoryService : IInventoryService, IDisposable
         
         try
         {
-            var inventorySlots = _inventorySlots.Value;
-            if (inventorySlots == null) return null;
+            var inventorySlots = _inventorySlots?.Value;
+            if (inventorySlots == null) 
+            {
+                DebugWindow.LogMsg("[InventoryService] Inventory slots cache is null");
+                return null;
+            }
 
             var inventoryHeight = inventorySlots.GetLength(0);
             var inventoryWidth = inventorySlots.GetLength(1);
@@ -132,12 +136,19 @@ public class InventoryService : IInventoryService, IDisposable
         
         try
         {
-            return _inventorySlots.Value;
+            var inventorySlots = _inventorySlots?.Value;
+            if (inventorySlots == null)
+            {
+                DebugWindow.LogMsg("[InventoryService] Inventory slots cache is null");
+                return new int[5, 12]; // Return default size
+            }
+            
+            return inventorySlots;
         }
         catch (Exception ex)
         {
             DebugWindow.LogError($"[InventoryService] Error getting inventory slots: {ex.Message}");
-            return null;
+            return new int[5, 12]; // Return default size on error
         }
     }
 
@@ -193,7 +204,11 @@ public class InventoryService : IInventoryService, IDisposable
             
             if (itemStackComp?.Info == null || inventoryItemStackComp?.Info == null) return false;
 
-            return inventoryItemStackComp.Size + itemStackComp.Size <= inventoryItemStackComp.Info.MaxStackSize;
+            var itemSize = itemStackComp.Size;
+            var inventorySize = inventoryItemStackComp.Size;
+            var maxStackSize = inventoryItemStackComp.Info.MaxStackSize;
+
+            return inventorySize + itemSize <= maxStackSize;
         }
         catch (Exception ex)
         {

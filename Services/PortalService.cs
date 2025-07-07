@@ -60,16 +60,13 @@ public class PortalService : IPortalService, IDisposable
         
         try
         {
-            var portalLabel = _portalLabel.Value;
+            var portalLabel = _portalLabel?.Value;
             if (portalLabel == null) return false;
+
+            var elementRect = element.GetClientRect();
+            var portalRect = portalLabel.Label.GetClientRect();
             
-            var portalRect = portalLabel.Label.GetClientRectCache;
-            var elementRect = element.GetClientRectCache;
-            
-            portalRect.Inflate(100, 100);
-            elementRect.Inflate(100, 100);
-            
-            return portalRect.Intersects(elementRect);
+            return elementRect.Intersects(portalRect);
         }
         catch (Exception ex)
         {
@@ -84,15 +81,16 @@ public class PortalService : IPortalService, IDisposable
         
         try
         {
-            var portalLabel = _portalLabel.Value;
+            var portalLabel = _portalLabel?.Value;
             if (portalLabel == null) return false;
-            
-            var ingameState = _gameController.IngameState;
+
+            var game = _gameController?.Game;
+            if (game == null) return false;
+
+            var ingameState = game.IngameState;
             if (ingameState == null) return false;
 
-            // Check multiple ways portal can be targeted
-            return CheckPortalHover(ingameState, portalLabel) || 
-                   CheckPortalTargetable(portalLabel);
+            return CheckPortalHover(ingameState, portalLabel) || CheckPortalTargetable(portalLabel);
         }
         catch (Exception ex)
         {
