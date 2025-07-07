@@ -132,6 +132,9 @@ public class ItemFilterService : IItemFilterService, IDisposable
                 return;
             }
 
+            // Check if config directory is empty and copy template files if needed
+            await EnsureTemplateFilesExist(configDirectory);
+
             var newFilters = await LoadFiltersFromDirectoryAsync(configDirectory);
             
             _filtersLock.EnterWriteLock();
@@ -153,6 +156,186 @@ public class ItemFilterService : IItemFilterService, IDisposable
         finally
         {
             _loadingSemaphore.Release();
+        }
+    }
+
+    private async Task EnsureTemplateFilesExist(string configDirectory)
+    {
+        try
+        {
+            // Check if any .ifl files exist in config directory
+            var existingFiles = Directory.GetFiles(configDirectory, "*.ifl", SearchOption.AllDirectories);
+            if (existingFiles.Length > 0)
+            {
+                DebugWindow.LogMsg($"[ItemFilterService] Found {existingFiles.Length} existing filter files");
+                return; // Files already exist, no need to copy templates
+            }
+
+            // Try to find template files in common locations relative to the plugin
+            var templateSources = GetPossibleTemplateLocations();
+            
+            foreach (var templateSource in templateSources)
+            {
+                if (Directory.Exists(templateSource))
+                {
+                    await CopyTemplateFiles(templateSource, configDirectory);
+                    DebugWindow.LogMsg($"[ItemFilterService] Copied template files from: {templateSource}");
+                    return;
+                }
+            }
+            
+            // If no template files found, create basic default filters
+            DebugWindow.LogMsg("[ItemFilterService] No template files found. Creating basic default filters.");
+            await CreateDefaultFilterFiles(configDirectory);
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[ItemFilterService] Error ensuring template files exist: {ex.Message}");
+        }
+    }
+
+    private async Task CreateDefaultFilterFiles(string configDirectory)
+    {
+        try
+        {
+            var defaultFilters = new Dictionary<string, string>
+            {
+                ["Currency.ifl"] = @"//----------------------------------------------
+// Currency
+//----------------------------------------------
+
+ClassName.EndsWith(""Currency"")
+
+//----------------------------------------------
+// Main Currency (Uncomment to enable specific currencies)
+//----------------------------------------------
+
+//BaseName == ""Chaos Orb""
+//BaseName == ""Divine Orb""
+//BaseName == ""Exalted Orb""
+//BaseName == ""Mirror of Kalandra""
+//BaseName == ""Chromatic Orb""
+//BaseName == ""Orb of Alchemy""
+//BaseName == ""Orb of Fusing""
+//BaseName == ""Vaal Orb""",
+
+                ["Questing.ifl"] = @"//----------------------------------------------
+// Quest Items
+//----------------------------------------------
+
+ClassName == ""QuestItem""",
+
+                ["Uniques.ifl"] = @"//----------------------------------------------
+// Uniques
+//----------------------------------------------
+
+Rarity == ItemRarity.Unique // All Uniques",
+
+                ["Gems.ifl"] = @"//----------------------------------------------
+// Skill Gems
+//----------------------------------------------
+
+//ClassName == ""Active Skill Gem""
+//ClassName == ""Support Skill Gem""
+
+// Specific valuable gems (uncomment to enable)
+//BaseName == ""Empower Support""
+//BaseName == ""Enlighten Support""
+//BaseName == ""Enhance Support""",
+
+                ["Basic.ifl"] = @"//----------------------------------------------
+// Basic Starter Filter
+//----------------------------------------------
+
+// Pick up all currency
+ClassName.EndsWith(""Currency"")
+
+// Pick up all uniques
+Rarity == ItemRarity.Unique
+
+// Pick up quest items
+ClassName == ""QuestItem""
+
+// Pick up maps
+ClassName == ""Map""
+
+// Pick up divination cards
+ClassName == ""DivinationCard"""
+            };
+
+            foreach (var (fileName, content) in defaultFilters)
+            {
+                var filePath = Path.Combine(configDirectory, fileName);
+                if (!File.Exists(filePath))
+                {
+                    await File.WriteAllTextAsync(filePath, content);
+                    DebugWindow.LogMsg($"[ItemFilterService] Created default filter: {fileName}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[ItemFilterService] Error creating default filter files: {ex.Message}");
+        }
+    }
+
+    private string[] GetPossibleTemplateLocations()
+    {
+        var serviceManager = PickItServiceManager.Instance;
+        var pickItPlugin = serviceManager.GetService<PickIt>();
+        
+        if (pickItPlugin?.ConfigDirectory == null) return new string[0];
+        
+        var pluginConfigDir = pickItPlugin.ConfigDirectory;
+        
+        // Common locations where template files might be found
+        return new string[]
+        {
+            // Relative to plugin config directory
+            Path.Combine(Path.GetDirectoryName(pluginConfigDir) ?? "", "Pickit Rules"),
+            Path.Combine(Path.GetDirectoryName(pluginConfigDir) ?? "", "PickitRules"),
+            Path.Combine(Path.GetDirectoryName(pluginConfigDir) ?? "", "Templates"),
+            
+            // In plugin directory itself
+            Path.Combine(pluginConfigDir, "Pickit Rules"),
+            Path.Combine(pluginConfigDir, "PickitRules"),
+            Path.Combine(pluginConfigDir, "Templates"),
+            
+            // Look for embedded resources or alongside plugin DLL
+            Path.Combine(Path.GetDirectoryName(typeof(ItemFilterService).Assembly.Location) ?? "", "Pickit Rules"),
+            Path.Combine(Path.GetDirectoryName(typeof(ItemFilterService).Assembly.Location) ?? "", "PickitRules"),
+        };
+    }
+
+    private async Task CopyTemplateFiles(string sourceDirectory, string targetDirectory)
+    {
+        try
+        {
+            var templateFiles = Directory.GetFiles(sourceDirectory, "*.ifl", SearchOption.AllDirectories);
+            
+            foreach (var sourceFile in templateFiles)
+            {
+                var relativePath = Path.GetRelativePath(sourceDirectory, sourceFile);
+                var targetFile = Path.Combine(targetDirectory, relativePath);
+                
+                // Create target directory if it doesn't exist
+                var targetDir = Path.GetDirectoryName(targetFile);
+                if (!string.IsNullOrEmpty(targetDir) && !Directory.Exists(targetDir))
+                {
+                    Directory.CreateDirectory(targetDir);
+                }
+                
+                // Copy file if it doesn't already exist
+                if (!File.Exists(targetFile))
+                {
+                    await File.WriteAllTextAsync(targetFile, await File.ReadAllTextAsync(sourceFile));
+                    DebugWindow.LogMsg($"[ItemFilterService] Copied template: {relativePath}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[ItemFilterService] Error copying template files: {ex.Message}");
         }
     }
 

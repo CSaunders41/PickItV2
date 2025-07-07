@@ -36,6 +36,11 @@ public static class RulesDisplay
                 ReloadRules(itemFilterService);
             }
 
+            if (ImGui.Button("Create Default Filters"))
+            {
+                CreateDefaultFilters(plugin, itemFilterService);
+            }
+
             ImGui.Separator();
             ImGui.Text("Rule Files\nFiles are loaded in order, so easier to process (common item queries hit more often that others) rule sets should be loaded first.");
             ImGui.Separator();
@@ -82,6 +87,29 @@ public static class RulesDisplay
         catch (Exception ex)
         {
             DebugWindow.LogError($"[RulesDisplay] Failed to reload rules: {ex.Message}");
+        }
+    }
+
+    private static void CreateDefaultFilters(PickIt plugin, IItemFilterService itemFilterService)
+    {
+        try
+        {
+            var configDirectory = GetPickitConfigFileDirectory(plugin);
+            var existingFiles = Directory.GetFiles(configDirectory, "*.ifl", SearchOption.AllDirectories);
+            
+            if (existingFiles.Length > 0)
+            {
+                DebugWindow.LogMsg($"[RulesDisplay] {existingFiles.Length} filter files already exist. Use 'Reload Rules' to refresh.");
+                return;
+            }
+
+            // This will trigger the ItemFilterService to create default files
+            itemFilterService.ReloadFilters();
+            DebugWindow.LogMsg("[RulesDisplay] Default filter files created. Check the filter folder!");
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[RulesDisplay] Failed to create default filters: {ex.Message}");
         }
     }
 
