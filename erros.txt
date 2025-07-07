@@ -1,7 +1,9 @@
 Build failed:
-[7/7/2025 4:36:03 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IRenderService.cs(6, 18)] CS0101: The namespace
-'PickIt.Services' already contains a definition for 'IRenderService'
-[7/7/2025 4:36:03 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IRenderService.cs(11, 10)] CS0111: Type
-'IRenderService' already defines a member called 'RenderAll' with the same parameter types
+[7/7/2025 5:51:12 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(322, 70)] CS1061:
+'Dictionary<EntityType, List<Entity>>' does not contain a definition for 'GetValueOrDefault' and no accessible extension
+method 'GetValueOrDefault' accepting a first argument of type 'Dictionary<EntityType, List<Entity>>' could be found (are
+you missing a using directive or an assembly reference?)
+[7/7/2025 5:51:12 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(328, 25)] CS0023:
+Operator '!' cannot be applied to operand of type 'method group'
