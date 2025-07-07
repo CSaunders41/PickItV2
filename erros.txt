@@ -1,67 +1,7 @@
 Build failed:
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InventoryService.cs(289, 25)] CS1061:
-'CachedValue<int[*,*]>' does not contain a definition for 'Dispose' and no accessible extension method 'Dispose' accepting a first
-argument of type 'CachedValue<int[*,*]>' could be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(289, 28)] CS1061: 'IPickItService' does not contain a
-definition for 'Dispose' and no accessible extension method 'Dispose' accepting a first argument of type 'IPickItService' could be found
-(are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(290, 31)] CS1061: 'IInventoryService' does not contain
-a definition for 'Dispose' and no accessible extension method 'Dispose' accepting a first argument of type 'IInventoryService' could be
-found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(291, 32)] CS1061: 'IItemFilterService' does not
-contain a definition for 'Dispose' and no accessible extension method 'Dispose' accepting a first argument of type 'IItemFilterService'
-could be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(292, 27)] CS1061: 'IInputService' does not contain a
-definition for 'Dispose' and no accessible extension method 'Dispose' accepting a first argument of type 'IInputService' could be found
-(are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(293, 28)] CS1061: 'IRenderService' does not contain a
-definition for 'Dispose' and no accessible extension method 'Dispose' accepting a first argument of type 'IRenderService' could be found
-(are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(294, 27)] CS1061: 'IChestService' does not contain a
-definition for 'Dispose' and no accessible extension method 'Dispose' accepting a first argument of type 'IChestService' could be found
-(are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\PickIt.cs(295, 28)] CS1061: 'IPortalService' does not contain a
-definition for 'Dispose' and no accessible extension method 'Dispose' accepting a first argument of type 'IPortalService' could be found
-(are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\RenderService.cs(82, 29)] CS1061: 'GameController' does
-not contain a definition for 'Graphics' and no accessible extension method 'Graphics' accepting a first argument of type
-'GameController' could be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\RenderService.cs(101, 37)] CS1061: 'GameController'
-does not contain a definition for 'Graphics' and no accessible extension method 'Graphics' accepting a first argument of type
-'GameController' could be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\RenderService.cs(153, 29)] CS1061: 'GameController'
-does not contain a definition for 'Graphics' and no accessible extension method 'Graphics' accepting a first argument of type
-'GameController' could be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\ChestService.cs(194, 26)] CS1061:
-'CachedValue<List<LabelOnGround>>' does not contain a definition for 'Dispose' and no accessible extension method 'Dispose' accepting a
-first argument of type 'CachedValue<List<LabelOnGround>>' could be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PortalService.cs(182, 22)] CS1061:
-'CachedValue<LabelOnGround>' does not contain a definition for 'Dispose' and no accessible extension method 'Dispose' accepting a first
-argument of type 'CachedValue<LabelOnGround>' could be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PickItService.cs(172, 53)] CS0407: 'Task<bool>
-PickItService.RunPickupIterationAsync()' has the wrong return type
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\PickItService.cs(285, 29)] CS1061:
-'CachedValue<List<PickItItemData>>' does not contain a definition for 'Dispose' and no accessible extension method 'Dispose' accepting a
-first argument of type 'CachedValue<List<PickItItemData>>' could be found (are you missing a using directive or an assembly reference?)
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(327, 86)] CS0103: The name 'EntityType'
-does not exist in the current context
-[7/7/2025 4:22:54 PM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\RenderService.cs(242, 44)] CS1061: 'GameController'
-does not contain a definition for 'Graphics' and no accessible extension method 'Graphics' accepting a first argument of type
-'GameController' could be found (are you missing a using directive or an assembly reference?)
+[7/7/2025 4:36:03 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IRenderService.cs(6, 18)] CS0101: The namespace
+'PickIt.Services' already contains a definition for 'IRenderService'
+[7/7/2025 4:36:03 PM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\IRenderService.cs(11, 10)] CS0111: Type
+'IRenderService' already defines a member called 'RenderAll' with the same parameter types
