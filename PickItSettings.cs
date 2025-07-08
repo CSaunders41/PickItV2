@@ -25,7 +25,7 @@ public class PickItSettings : ISettings
     public ToggleNode NoLazyLootingWhileEnemyClose { get; set; } = new ToggleNode(false);
     public HotkeyNode LazyLootingPauseKey { get; set; } = new HotkeyNode(Keys.Space);
     
-    [Menu("Restore Mouse State After Lazy Loot", "When enabled, the mouse cursor will return to its original position and button states after picking up items during lazy looting")]
+    [Menu("Restore Mouse State After Lazy Loot", "When enabled, the mouse cursor will return to its original position and left/right button states after picking up items during lazy looting")]
     public ToggleNode RestoreMousePositionAfterLazyLoot { get; set; } = new ToggleNode(false);
     public ToggleNode PickUpEverything { get; set; } = new ToggleNode(false);
     public ChestSettings ChestSettings { get; set; } = new();

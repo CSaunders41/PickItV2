@@ -577,32 +577,11 @@ public class InputService : IInputService, IDisposable
         }
     }
 
-    private void MiddleDown()
-    {
-        try
-        {
-            Input.MiddleDown();
-        }
-        catch (Exception ex)
-        {
-            DebugWindow.LogError($"[InputService] Error sending middle down: {ex.Message}");
-        }
-    }
 
-    private void MiddleUp()
-    {
-        try
-        {
-            Input.MiddleUp();
-        }
-        catch (Exception ex)
-        {
-            DebugWindow.LogError($"[InputService] Error sending middle up: {ex.Message}");
-        }
-    }
 
     /// <summary>
     /// Restores the mouse button states to their previously captured state
+    /// Only restores Left and Right buttons as these are the only ones supported by ExileCore Input class
     /// </summary>
     private void RestoreMouseButtonState(MouseButtonState originalState)
     {
@@ -615,36 +594,30 @@ public class InputService : IInputService, IDisposable
             if (originalState.LeftButton && !currentState.LeftButton)
             {
                 LeftDown();
+                DebugWindow.LogMsg($"[InputService] Restored left button to DOWN state");
             }
             else if (!originalState.LeftButton && currentState.LeftButton)
             {
                 LeftUp();
+                DebugWindow.LogMsg($"[InputService] Restored left button to UP state");
             }
             
             // Restore right button state
             if (originalState.RightButton && !currentState.RightButton)
             {
                 RightDown();
+                DebugWindow.LogMsg($"[InputService] Restored right button to DOWN state");
             }
             else if (!originalState.RightButton && currentState.RightButton)
             {
                 RightUp();
+                DebugWindow.LogMsg($"[InputService] Restored right button to UP state");
             }
             
-            // Restore middle button state
-            if (originalState.MiddleButton && !currentState.MiddleButton)
-            {
-                MiddleDown();
-            }
-            else if (!originalState.MiddleButton && currentState.MiddleButton)
-            {
-                MiddleUp();
-            }
+            // Note: Middle, X1, and X2 buttons are captured for completeness but not restored
+            // as ExileCore Input class doesn't provide methods for these buttons
             
-            // Note: X1 and X2 buttons don't have built-in Input methods in ExileCore
-            // so we skip those for now to avoid complications
-            
-            DebugWindow.LogMsg($"[InputService] Restored mouse button state from [{currentState}] to [{originalState}]");
+            DebugWindow.LogMsg($"[InputService] Mouse button state restoration completed - Original: [{originalState}], Current: [{currentState}]");
         }
         catch (Exception ex)
         {
