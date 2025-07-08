@@ -1,10 +1,7 @@
 Build failed:
-[7/7/2025 6:00:36 PM, C:\Program Files\dotnet\sdk\8.0.411\Microsoft.Common.CurrentVersion.targets(4857, 5)] MSB3027: Could
-not copy "obj\Debug\net8.0-windows\win-x64\PickIt.dll" to "C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Temp\PickItV2\PickIt.dll". Exceeded retry count of 10. Failed. The
-file is locked by: "Loader (24804)"
-[7/7/2025 6:00:36 PM, C:\Program Files\dotnet\sdk\8.0.411\Microsoft.Common.CurrentVersion.targets(4857, 5)] MSB3021:
-Unable to copy file "obj\Debug\net8.0-windows\win-x64\PickIt.dll" to "C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Temp\PickItV2\PickIt.dll". The process cannot access the file
-'C:\Program Files (x86)\Grinding Gear Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Temp\PickItV2\PickIt.dll'
-because it is being used by another process.
+[7/8/2025 8:31:52 AM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(584, 19)] CS0117: 'Input'
+does not contain a definition for 'MiddleDown'
+[7/8/2025 8:31:52 AM, C:\Program Files (x86)\Grinding Gear
+Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(596, 19)] CS0117: 'Input'
+does not contain a definition for 'MiddleUp'
