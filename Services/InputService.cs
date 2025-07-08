@@ -635,42 +635,67 @@ public class InputService : IInputService, IDisposable
     /// <summary>
     /// Restores the mouse button states to their previously captured state
     /// Only restores Left and Right buttons as these are the only ones supported by ExileCore Input class
+    /// SAFETY RULE: Never force buttons DOWN - only restore buttons to UP if they weren't originally down
+    /// This prevents forcing buttons down if the user has intentionally released them during pickup
     /// </summary>
     private void RestoreMouseButtonState(MouseButtonState originalState)
     {
         try
         {
-            // Get current state to compare
+            // Get current physical state of mouse buttons
             var currentState = MouseButtonState.Capture();
             
-            // Restore left button state
-            if (originalState.LeftButton && !currentState.LeftButton)
+            // LEFT BUTTON RESTORATION - SAFE APPROACH
+            if (!originalState.LeftButton && currentState.LeftButton)
             {
-                LeftDown();
-                DebugWindow.LogMsg($"[InputService] Restored left button to DOWN state");
-            }
-            else if (!originalState.LeftButton && currentState.LeftButton)
-            {
+                // User didn't have left button down originally, but it's down now (likely from our click)
+                // Safe to restore to UP state
                 LeftUp();
-                DebugWindow.LogMsg($"[InputService] Restored left button to UP state");
+                DebugWindow.LogMsg($"[InputService] Restored left button to UP state (was not originally pressed)");
+            }
+            else if (originalState.LeftButton && !currentState.LeftButton)
+            {
+                // User originally had left button down, but it's not down now
+                // User released it during pickup - NEVER force it back down
+                DebugWindow.LogMsg($"[InputService] Left button was originally down but user released it - respecting user action");
+            }
+            else if (originalState.LeftButton && currentState.LeftButton)
+            {
+                // User had it down originally and still has it down - perfect, no action needed
+                DebugWindow.LogMsg($"[InputService] Left button state unchanged - still held down as originally");
+            }
+            else
+            {
+                // Both original and current are UP - no action needed
+                DebugWindow.LogMsg($"[InputService] Left button state unchanged - still up as originally");
             }
             
-            // Restore right button state
-            if (originalState.RightButton && !currentState.RightButton)
+            // RIGHT BUTTON RESTORATION - SAFE APPROACH
+            if (!originalState.RightButton && currentState.RightButton)
             {
-                RightDown();
-                DebugWindow.LogMsg($"[InputService] Restored right button to DOWN state");
-            }
-            else if (!originalState.RightButton && currentState.RightButton)
-            {
+                // User didn't have right button down originally, but it's down now (likely from our click)
+                // Safe to restore to UP state
                 RightUp();
-                DebugWindow.LogMsg($"[InputService] Restored right button to UP state");
+                DebugWindow.LogMsg($"[InputService] Restored right button to UP state (was not originally pressed)");
+            }
+            else if (originalState.RightButton && !currentState.RightButton)
+            {
+                // User originally had right button down, but it's not down now
+                // User released it during pickup - NEVER force it back down
+                DebugWindow.LogMsg($"[InputService] Right button was originally down but user released it - respecting user action");
+            }
+            else if (originalState.RightButton && currentState.RightButton)
+            {
+                // User had it down originally and still has it down - perfect, no action needed
+                DebugWindow.LogMsg($"[InputService] Right button state unchanged - still held down as originally");
+            }
+            else
+            {
+                // Both original and current are UP - no action needed
+                DebugWindow.LogMsg($"[InputService] Right button state unchanged - still up as originally");
             }
             
-            // Note: Middle, X1, and X2 buttons are captured for completeness but not restored
-            // as ExileCore Input class doesn't provide methods for these buttons
-            
-            DebugWindow.LogMsg($"[InputService] Mouse button state restoration completed - Original: [{originalState}], Current: [{currentState}]");
+            DebugWindow.LogMsg($"[InputService] Safe mouse button restoration completed - Original: [{originalState}], Current: [{currentState}]");
         }
         catch (Exception ex)
         {
