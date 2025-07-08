@@ -284,7 +284,7 @@ public class PickItService : IPickItService, IDisposable
                 }
 
                 var distance = label.Entity.DistancePlayer;
-                if (distance >= _settings.PickupRange ||
+                if (distance > _settings.PickupRange ||
                     string.IsNullOrEmpty(label.Entity.Path))
                 {
                     continue;
