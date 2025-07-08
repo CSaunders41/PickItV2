@@ -15,6 +15,7 @@ using SharpDX;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Vector2 = System.Numerics.Vector2;
+using System.Collections.Generic;
 
 namespace PickIt.Services;
 
@@ -31,11 +32,57 @@ public class InputService : IInputService, IDisposable
     [DllImport("user32.dll")]
     private static extern bool GetCursorPos(out POINT lpPoint);
 
+    // Windows API for getting key/mouse button states
+    [DllImport("user32.dll")]
+    private static extern short GetKeyState(int nVirtKey);
+
     [StructLayout(LayoutKind.Sequential)]
     private struct POINT
     {
         public int X;
         public int Y;
+    }
+
+    // Virtual key codes for mouse buttons
+    private const int VK_LBUTTON = 0x01;
+    private const int VK_RBUTTON = 0x02;
+    private const int VK_MBUTTON = 0x04;
+    private const int VK_XBUTTON1 = 0x05;
+    private const int VK_XBUTTON2 = 0x06;
+
+    /// <summary>
+    /// Captures the current state of mouse buttons for restoration later
+    /// </summary>
+    private struct MouseButtonState
+    {
+        public bool LeftButton;
+        public bool RightButton;
+        public bool MiddleButton;
+        public bool XButton1;
+        public bool XButton2;
+
+        public static MouseButtonState Capture()
+        {
+            return new MouseButtonState
+            {
+                LeftButton = (GetKeyState(VK_LBUTTON) & 0x8000) != 0,
+                RightButton = (GetKeyState(VK_RBUTTON) & 0x8000) != 0,
+                MiddleButton = (GetKeyState(VK_MBUTTON) & 0x8000) != 0,
+                XButton1 = (GetKeyState(VK_XBUTTON1) & 0x8000) != 0,
+                XButton2 = (GetKeyState(VK_XBUTTON2) & 0x8000) != 0
+            };
+        }
+
+        public override string ToString()
+        {
+            var pressed = new List<string>();
+            if (LeftButton) pressed.Add("Left");
+            if (RightButton) pressed.Add("Right");
+            if (MiddleButton) pressed.Add("Middle");
+            if (XButton1) pressed.Add("X1");
+            if (XButton2) pressed.Add("X2");
+            return pressed.Count > 0 ? string.Join(", ", pressed) : "None";
+        }
     }
 
     public InputService(GameController gameController, PickItSettings settings)
@@ -264,18 +311,21 @@ public class InputService : IInputService, IDisposable
                 return;
             }
 
-            // Mouse position restoration feature for lazy looting
-            // Captures the original mouse position before clicking and restores it after
-            // This prevents the mouse from being left at the item location after pickup
+            // Mouse state restoration feature for lazy looting
+            // Captures both mouse position and button states before clicking and restores them after
+            // This prevents the mouse from being left at the item location with different button states
             Vector2? originalMousePosition = null;
-            var shouldRestoreMousePosition = ShouldRestoreMousePosition();
+            MouseButtonState originalButtonState = default;
+            var shouldRestoreMouseState = ShouldRestoreMousePosition();
             
-            if (shouldRestoreMousePosition)
+            if (shouldRestoreMouseState)
             {
                 originalMousePosition = GetCursorPos();
+                originalButtonState = MouseButtonState.Capture();
+                
                 if (originalMousePosition.HasValue)
                 {
-                    DebugWindow.LogMsg($"[InputService] Captured original mouse position: {originalMousePosition.Value}");
+                    DebugWindow.LogMsg($"[InputService] Captured original mouse state - Position: {originalMousePosition.Value}, Buttons: [{originalButtonState}]");
                 }
             }
 
@@ -293,14 +343,22 @@ public class InputService : IInputService, IDisposable
             // Reset timing
             _sinceLastClick.Restart();
             
-            // Restore original mouse position if feature is enabled
-            if (shouldRestoreMousePosition && originalMousePosition.HasValue)
+            // Restore original mouse state (position and buttons) if feature is enabled
+            if (shouldRestoreMouseState && originalMousePosition.HasValue)
             {
-                // Small delay to ensure click is processed before moving mouse
+                // Small delay to ensure click is processed before restoring mouse state
                 await Task.Delay(50);
                 
+                // Restore mouse position first
                 SetCursorPos(originalMousePosition.Value);
-                DebugWindow.LogMsg($"[InputService] Restored mouse position to original location: {originalMousePosition.Value}");
+                
+                // Small delay between position and button restoration
+                await Task.Delay(25);
+                
+                // Restore mouse button states
+                RestoreMouseButtonState(originalButtonState);
+                
+                DebugWindow.LogMsg($"[InputService] Restored complete mouse state - Position: {originalMousePosition.Value}, Buttons: [{originalButtonState}]");
             }
             
             DebugWindow.LogMsg($"[InputService] Click completed successfully for item at distance {item.DistancePlayer}");
@@ -495,6 +553,105 @@ public class InputService : IInputService, IDisposable
         }
     }
 
+    private void RightDown()
+    {
+        try
+        {
+            Input.RightDown();
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[InputService] Error sending right down: {ex.Message}");
+        }
+    }
+
+    private void RightUp()
+    {
+        try
+        {
+            Input.RightUp();
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[InputService] Error sending right up: {ex.Message}");
+        }
+    }
+
+    private void MiddleDown()
+    {
+        try
+        {
+            Input.MiddleDown();
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[InputService] Error sending middle down: {ex.Message}");
+        }
+    }
+
+    private void MiddleUp()
+    {
+        try
+        {
+            Input.MiddleUp();
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[InputService] Error sending middle up: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Restores the mouse button states to their previously captured state
+    /// </summary>
+    private void RestoreMouseButtonState(MouseButtonState originalState)
+    {
+        try
+        {
+            // Get current state to compare
+            var currentState = MouseButtonState.Capture();
+            
+            // Restore left button state
+            if (originalState.LeftButton && !currentState.LeftButton)
+            {
+                LeftDown();
+            }
+            else if (!originalState.LeftButton && currentState.LeftButton)
+            {
+                LeftUp();
+            }
+            
+            // Restore right button state
+            if (originalState.RightButton && !currentState.RightButton)
+            {
+                RightDown();
+            }
+            else if (!originalState.RightButton && currentState.RightButton)
+            {
+                RightUp();
+            }
+            
+            // Restore middle button state
+            if (originalState.MiddleButton && !currentState.MiddleButton)
+            {
+                MiddleDown();
+            }
+            else if (!originalState.MiddleButton && currentState.MiddleButton)
+            {
+                MiddleUp();
+            }
+            
+            // Note: X1 and X2 buttons don't have built-in Input methods in ExileCore
+            // so we skip those for now to avoid complications
+            
+            DebugWindow.LogMsg($"[InputService] Restored mouse button state from [{currentState}] to [{originalState}]");
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[InputService] Error restoring mouse button state: {ex.Message}");
+        }
+    }
+
     private void SetCursorPos(Vector2 position)
     {
         try
@@ -525,7 +682,7 @@ public class InputService : IInputService, IDisposable
     }
 
     /// <summary>
-    /// Determines if mouse position should be restored after clicking.
+    /// Determines if mouse state (position and button states) should be restored after clicking.
     /// This feature only applies when lazy looting is enabled and the user has enabled the setting.
     /// </summary>
     private bool ShouldRestoreMousePosition()
@@ -538,7 +695,7 @@ public class InputService : IInputService, IDisposable
         }
         catch (Exception ex)
         {
-            DebugWindow.LogError($"[InputService] Error checking if mouse position should be restored: {ex.Message}");
+            DebugWindow.LogError($"[InputService] Error checking if mouse state should be restored: {ex.Message}");
             return false;
         }
     }
