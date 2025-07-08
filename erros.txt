@@ -1,7 +1,15 @@
 Build failed:
-[7/8/2025 8:31:52 AM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(584, 19)] CS0117: 'Input'
-does not contain a definition for 'MiddleDown'
-[7/8/2025 8:31:52 AM, C:\Program Files (x86)\Grinding Gear
-Games\Scripts\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\PickItV2\Services\InputService.cs(596, 19)] CS0117: 'Input'
-does not contain a definition for 'MiddleUp'
+[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(365, 21)]
+CS1626: Cannot yield a value in the body of a try block with a catch clause
+[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(387, 17)]
+CS1626: Cannot yield a value in the body of a try block with a catch clause
+[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(392, 17)]
+CS1626: Cannot yield a value in the body of a try block with a catch clause
+[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(397, 17)]
+CS1631: Cannot yield a value in the body of a catch clause
+[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(794, 21)]
+CS1622: Cannot return a value from an iterator. Use the yield return statement to return a value, or yield break to end the
+iteration.
+[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(1114, 68)]
+CS1061: 'IngameData' does not contain a definition for 'TerrainData' and no accessible extension method 'TerrainData' accepting a
+first argument of type 'IngameData' could be found (are you missing a using directive or an assembly reference?)
