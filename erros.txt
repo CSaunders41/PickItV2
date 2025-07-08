@@ -1,15 +1,277 @@
 Build failed:
-[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(365, 21)]
-CS1626: Cannot yield a value in the body of a try block with a catch clause
-[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(387, 17)]
-CS1626: Cannot yield a value in the body of a try block with a catch clause
-[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(392, 17)]
-CS1626: Cannot yield a value in the body of a try block with a catch clause
-[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(397, 17)]
-CS1631: Cannot yield a value in the body of a catch clause
-[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(794, 21)]
-CS1622: Cannot return a value from an iterator. Use the yield return statement to return a value, or yield break to end the
-iteration.
-[7/8/2025 2:16:59 PM, C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Follower\Follower.cs(1114, 68)]
-CS1061: 'IngameData' does not contain a definition for 'TerrainData' and no accessible extension method 'TerrainData' accepting a
-first argument of type 'IngameData' could be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(28, 16)] CS0246: The
+type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(17, 7)] CS0246: The type
+or namespace name 'ImGuiNET' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(18, 7)] CS0246: The type
+or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(19, 7)] CS0246: The type
+or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(20, 7)] CS0246: The type
+or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(21, 7)] CS0246: The type
+or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(22, 7)] CS0246: The type
+or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(23, 7)] CS0246: The type
+or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(24, 7)] CS0246: The type
+or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(25, 7)] CS0246: The type
+or namespace name 'SharpDX' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(26, 7)] CS0246: The type
+or namespace name 'SharpDX' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(27, 14)] CS0246: The
+type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(3, 7)] CS0246: The
+type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(4, 7)] CS0246: The
+type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(5, 7)]
+CS0246: The type or namespace name 'ImGuiNET' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(6, 7)]
+CS0246: The type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(7, 7)]
+CS0246: The type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(8, 7)]
+CS0246: The type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(9, 7)]
+CS0246: The type or namespace name 'SharpDX' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Misc.cs(2, 7)] CS0246: The
+type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Misc.cs(3, 7)] CS0246: The
+type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Misc.cs(4, 7)] CS0246: The
+type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Misc.cs(5, 7)] CS0246: The
+type or namespace name 'SharpDX' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Mouse.cs(14, 7)] CS0246:
+The type or namespace name 'SharpDX' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Player.cs(1, 7)] CS0246:
+The type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Player.cs(2, 7)] CS0246:
+The type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Player.cs(3, 7)] CS0246:
+The type or namespace name 'PoeHUD' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(32, 25)] CS0246: The
+type or namespace name 'BaseSettingsPlugin<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(326, 32)] CS0246: The
+type or namespace name 'EntityWrapper' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(337, 37)] CS0246: The
+type or namespace name 'Buff' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(36, 31)] CS0246: The
+type or namespace name 'EntityWrapper' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(38, 17)] CS0246: The
+type or namespace name 'Vector2' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(40, 17)] CS0246: The
+type or namespace name 'Vector2' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(52, 57)]
+CS0246: The type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(59, 78)]
+CS0246: The type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(66, 55)]
+CS0246: The type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(74, 76)]
+CS0246: The type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(140, 40)] CS0246: The
+type or namespace name 'Vector3' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(140, 99)] CS0246: The
+type or namespace name 'Color' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(232, 42)] CS0246: The
+type or namespace name 'EntityWrapper' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(234, 44)] CS0246: The
+type or namespace name 'EntityWrapper' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(111, 61)]
+CS0246: The type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(118, 61)]
+CS0246: The type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(274, 50)] CS0246: The
+type or namespace name 'EntityWrapper' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(125, 82)]
+CS0246: The type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(132, 82)]
+CS0246: The type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(416, 34)] CS0246: The
+type or namespace name 'EntityWrapper' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(182, 59)]
+CS0246: The type or namespace name 'Color' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\ImGuiExtension.cs(182, 23)]
+CS0246: The type or namespace name 'Color' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Main.cs(480, 41)] CS0246: The
+type or namespace name 'Component' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(8, 29)] CS0246: The
+type or namespace name 'SettingsBase' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(10, 16)] CS0246: The
+type or namespace name 'HotkeyNode' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(11, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(12, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(13, 16)] CS0246: The
+type or namespace name 'ToggleNode' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(14, 16)] CS0246: The
+type or namespace name 'ToggleNode' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(15, 16)] CS0246: The
+type or namespace name 'ToggleNode' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(16, 16)] CS0246: The
+type or namespace name 'ToggleNode' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(17, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(18, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(19, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(20, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(21, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(22, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(23, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(24, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(25, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(26, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Misc.cs(17, 42)] CS0246:
+The type or namespace name 'EntityWrapper' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(27, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Misc.cs(29, 45)] CS0246:
+The type or namespace name 'Vector2' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Misc.cs(29, 63)] CS0246:
+The type or namespace name 'Vector2' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(28, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(29, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(30, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(31, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(32, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(33, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Core\Settings.cs(34, 16)] CS0246: The
+type or namespace name 'RangeNode<>' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Mouse.cs(44, 55)] CS0246:
+The type or namespace name 'RectangleF' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Mouse.cs(139, 41)] CS0246:
+The type or namespace name 'Vector2' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Mouse.cs(52, 53)] CS0246:
+The type or namespace name 'RectangleF' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Mouse.cs(52, 74)] CS0246:
+The type or namespace name 'RectangleF' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Mouse.cs(61, 23)] CS0246:
+The type or namespace name 'SharpDX' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Mouse.cs(75, 53)] CS0246:
+The type or namespace name 'Vector2' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Mouse.cs(111, 46)] CS0246:
+The type or namespace name 'Vector2' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Mouse.cs(109, 23)] CS0246:
+The type or namespace name 'Vector2' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Mouse.cs(130, 58)] CS0246:
+The type or namespace name 'Vector2' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Player.cs(9, 23)] CS0246:
+The type or namespace name 'EntityWrapper' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Player.cs(15, 23)] CS0246:
+The type or namespace name 'Life' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Player.cs(16, 23)] CS0246:
+The type or namespace name 'AreaInstance' could not be found (are you missing a using directive or an assembly reference?)
+[7/8/2025 2:16:53 PM,
+C:\Users\Admin\Documents\POE1\ExileApi-Compiled-3.26.0.0.4\Plugins\Source\Aim-Bot\src\Pickit\Utilities\Mouse.cs(102, 45)] CS0246:
+The type or namespace name 'SharpDX' could not be found (are you missing a using directive or an assembly reference?)
