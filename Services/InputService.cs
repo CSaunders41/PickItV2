@@ -99,10 +99,20 @@ public class InputService : IInputService, IDisposable
         {
             _settings.PickUpKey.OnValueChanged += () => RegisterKey(_settings.PickUpKey);
             _settings.ProfilerHotkey.OnValueChanged += () => RegisterKey(_settings.ProfilerHotkey);
+            _settings.LazyLootingPauseKey.OnValueChanged += () => RegisterKey(_settings.LazyLootingPauseKey);
 
             RegisterKey(_settings.PickUpKey);
             RegisterKey(_settings.ProfilerHotkey);
+            RegisterKey(_settings.LazyLootingPauseKey);
             RegisterKey(Keys.Escape);
+            
+            // Register fallback pause keys for safety
+            RegisterKey(Keys.Pause);
+            RegisterKey(Keys.LControlKey);
+            RegisterKey(Keys.RControlKey);
+            RegisterKey(Keys.Space);
+            
+            DebugWindow.LogMsg($"[InputService] Registered hotkeys - Pickup: {_settings.PickUpKey.Value}, Pause: {_settings.LazyLootingPauseKey.Value}, Fallbacks: Pause, Ctrl+Space");
         }
         catch (Exception ex)
         {
@@ -122,9 +132,10 @@ public class InputService : IInputService, IDisposable
                 return WorkMode.Stop;
             }
 
-            // Check for escape key
+            // Check for escape key as emergency stop
             if (GetKeyState(Keys.Escape))
             {
+                DebugWindow.LogMsg("[InputService] EMERGENCY STOP: Escape key detected - Stopping all plugin activity");
                 return WorkMode.Stop;
             }
 
@@ -235,10 +246,43 @@ public class InputService : IInputService, IDisposable
         
         try
         {
+            // Check for escape key as emergency stop (this also gets handled in GetCurrentWorkMode)
+            if (GetKeyState(Keys.Escape))
+            {
+                _disableLazyLootingTill = DateTime.Now.AddSeconds(5); // Longer pause for escape
+                DebugWindow.LogMsg("[InputService] EMERGENCY PAUSE: Escape key detected - Lazy looting disabled for 5 seconds");
+                return;
+            }
+            
+            // Check configured pause key
             var lazyLootingPauseKey = _settings?.LazyLootingPauseKey?.Value;
-            if (lazyLootingPauseKey != null && GetKeyState(lazyLootingPauseKey.Value))
+            if (lazyLootingPauseKey != null)
+            {
+                // Use both GetKeyState and IsKeyDown for better detection
+                var keyPressed = GetKeyState(lazyLootingPauseKey.Value) || IsKeyDown(lazyLootingPauseKey.Value);
+                
+                if (keyPressed)
+                {
+                    _disableLazyLootingTill = DateTime.Now.AddSeconds(2);
+                    DebugWindow.LogMsg($"[InputService] PAUSE KEY DETECTED: {lazyLootingPauseKey.Value} - Lazy looting disabled for 2 seconds");
+                    return;
+                }
+            }
+            
+            // Fallback pause keys as safety net (in case configured key fails)
+            if (GetKeyState(Keys.Pause) || IsKeyDown(Keys.Pause))
             {
                 _disableLazyLootingTill = DateTime.Now.AddSeconds(2);
+                DebugWindow.LogMsg("[InputService] FALLBACK PAUSE: Pause key detected - Lazy looting disabled for 2 seconds");
+                return;
+            }
+            
+            // Additional fallback: Ctrl+Space (common pause combination)
+            if ((GetKeyState(Keys.LControlKey) || GetKeyState(Keys.RControlKey)) && GetKeyState(Keys.Space))
+            {
+                _disableLazyLootingTill = DateTime.Now.AddSeconds(2);
+                DebugWindow.LogMsg("[InputService] FALLBACK PAUSE: Ctrl+Space detected - Lazy looting disabled for 2 seconds");
+                return;
             }
         }
         catch (Exception ex)
@@ -400,9 +444,18 @@ public class InputService : IInputService, IDisposable
     private bool CanLazyLoot()
     {
         var lazyLooting = _settings?.LazyLooting == true;
-        if (!lazyLooting) return false;
+        if (!lazyLooting) 
+        {
+            DebugWindow.LogMsg("[InputService] Lazy looting disabled in settings");
+            return false;
+        }
         
-        if (_disableLazyLootingTill > DateTime.Now) return false;
+        if (_disableLazyLootingTill > DateTime.Now) 
+        {
+            var timeLeft = (_disableLazyLootingTill - DateTime.Now).TotalSeconds;
+            DebugWindow.LogMsg($"[InputService] Lazy looting PAUSED - {timeLeft:F1} seconds remaining");
+            return false;
+        }
         
         try
         {

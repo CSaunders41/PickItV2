@@ -23,6 +23,8 @@ public class PickItSettings : ISettings
     public RangeNode<int> PauseBetweenClicks { get; set; } = new RangeNode<int>(100, 0, 500);
     public ToggleNode LazyLooting { get; set; } = new ToggleNode(false);
     public ToggleNode NoLazyLootingWhileEnemyClose { get; set; } = new ToggleNode(false);
+    
+    [Menu("Lazy Looting Pause Key", "Primary key to pause lazy looting for 2 seconds. Fallback keys: Escape (5s pause + stops plugin), Pause key, or Ctrl+Space")]
     public HotkeyNode LazyLootingPauseKey { get; set; } = new HotkeyNode(Keys.Space);
     
     [Menu("Restore Mouse State After Lazy Loot", "When enabled, the mouse cursor will return to its original position and left/right button states after picking up items during lazy looting")]
