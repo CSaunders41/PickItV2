@@ -13,6 +13,7 @@ using ExileCore.Shared.Enums;
 using ExileCore.Shared.Helpers;
 using SharpDX;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Vector2 = System.Numerics.Vector2;
 
 namespace PickIt.Services;
@@ -25,6 +26,17 @@ public class InputService : IInputService, IDisposable
     private volatile bool _disposed = false;
     private volatile bool _unclickedMouse = false;
     private DateTime _disableLazyLootingTill = DateTime.MinValue;
+
+    // Windows API for getting cursor position
+    [DllImport("user32.dll")]
+    private static extern bool GetCursorPos(out POINT lpPoint);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct POINT
+    {
+        public int X;
+        public int Y;
+    }
 
     public InputService(GameController gameController, PickItSettings settings)
     {
@@ -252,7 +264,22 @@ public class InputService : IInputService, IDisposable
                 return;
             }
 
-            // Simple approach: Set cursor position and click immediately
+            // Mouse position restoration feature for lazy looting
+            // Captures the original mouse position before clicking and restores it after
+            // This prevents the mouse from being left at the item location after pickup
+            Vector2? originalMousePosition = null;
+            var shouldRestoreMousePosition = ShouldRestoreMousePosition();
+            
+            if (shouldRestoreMousePosition)
+            {
+                originalMousePosition = GetCursorPos();
+                if (originalMousePosition.HasValue)
+                {
+                    DebugWindow.LogMsg($"[InputService] Captured original mouse position: {originalMousePosition.Value}");
+                }
+            }
+
+            // Set cursor position and click
             DebugWindow.LogMsg($"[InputService] Setting cursor position to {position}");
             SetCursorPos(position);
             
@@ -265,6 +292,16 @@ public class InputService : IInputService, IDisposable
             
             // Reset timing
             _sinceLastClick.Restart();
+            
+            // Restore original mouse position if feature is enabled
+            if (shouldRestoreMousePosition && originalMousePosition.HasValue)
+            {
+                // Small delay to ensure click is processed before moving mouse
+                await Task.Delay(50);
+                
+                SetCursorPos(originalMousePosition.Value);
+                DebugWindow.LogMsg($"[InputService] Restored mouse position to original location: {originalMousePosition.Value}");
+            }
             
             DebugWindow.LogMsg($"[InputService] Click completed successfully for item at distance {item.DistancePlayer}");
         }
@@ -467,6 +504,42 @@ public class InputService : IInputService, IDisposable
         catch (Exception ex)
         {
             DebugWindow.LogError($"[InputService] Error setting cursor position: {ex.Message}");
+        }
+    }
+
+    private Vector2? GetCursorPos()
+    {
+        try
+        {
+            if (GetCursorPos(out POINT point))
+            {
+                return new Vector2(point.X, point.Y);
+            }
+            return null;
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[InputService] Error getting cursor position: {ex.Message}");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Determines if mouse position should be restored after clicking.
+    /// This feature only applies when lazy looting is enabled and the user has enabled the setting.
+    /// </summary>
+    private bool ShouldRestoreMousePosition()
+    {
+        try
+        {
+            var workMode = GetCurrentWorkMode();
+            return workMode == WorkMode.Lazy && 
+                   _settings?.RestoreMousePositionAfterLazyLoot?.Value == true;
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[InputService] Error checking if mouse position should be restored: {ex.Message}");
+            return false;
         }
     }
 
