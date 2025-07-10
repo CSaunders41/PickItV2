@@ -269,17 +269,18 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
     {
         try
         {
-            if (!Settings.RangeVisualizationSettings.ShowPickupRange) return;
+            if (!Settings.SmartPickupSettings.ShowPickupRange) return;
             
-            var playerRender = GameController.Player?.GetComponent<Render>();
-            if (playerRender == null) return;
+            var player = GameController.Player;
+            if (player == null) return;
             
-            var playerPos = playerRender.Pos;
+            var playerPos = new SDxVector3(player.Pos.X, player.Pos.Y, player.Pos.Z);
             var range = Settings.PickupRange;
-            var color = Settings.RangeVisualizationSettings.RangeCircleColor;
-            var thickness = Settings.RangeVisualizationSettings.RangeCircleThickness;
             
-            DrawEllipseToWorld(playerPos, range, 25, thickness, color);
+            // Fixed green color with good visibility
+            var visibleColor = new Color(0, 255, 0, 200);
+            
+            DrawEllipseToWorld(playerPos, range, 25, 2, visibleColor);
         }
         catch (Exception ex)
         {
@@ -291,31 +292,29 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
     {
         try
         {
-            if (!Settings.RangeVisualizationSettings.ShowDeathStatus) return;
+            if (!Settings.SmartPickupSettings.ShowDebugInfo) return;
             
-            var position = Settings.RangeVisualizationSettings.DeathStatusPosition;
-            var screenPos = new Vector2(position.Value.X, position.Value.Y);
+            // Fixed position in top-left corner
+            var screenPos = new Vector2(10f, 200f);
             
             // Get death status
             var deathStatus = _deathAwarenessService.GetStatusString();
             var statistics = _deathAwarenessService.GetPickupStatistics();
             
-            // Create status text
-            var statusText = $"Death Status: {deathStatus}\n" +
-                           $"Pickup Success Rate: {statistics.SuccessRate:F1}%\n" +
-                           $"Total Attempts: {statistics.TotalAttempts}\n" +
-                           $"Successful: {statistics.SuccessfulPickups} | Failed: {statistics.FailedPickups}\n" +
-                           $"Session Duration: {statistics.SessionDuration.TotalMinutes:F1}m";
+            // Create simplified status text
+            var statusText = $"PickIt Status: {deathStatus}\n" +
+                           $"Success Rate: {statistics.SuccessRate:F1}%\n" +
+                           $"Attempts: {statistics.TotalAttempts} | Successful: {statistics.SuccessfulPickups}";
             
             // Choose color based on death state
             var textColor = _deathAwarenessService.IsPlayerDead ? Color.Red : 
-                           _deathAwarenessService.IsWaitingForResurrection ? Color.Yellow : Color.Green;
+                           _deathAwarenessService.IsWaitingForResurrection ? Color.Yellow : Color.LightGreen;
             
-            Graphics.DrawText(statusText, screenPos, textColor, 12);
+            Graphics.DrawText(statusText, screenPos, textColor, 14);
         }
         catch (Exception ex)
         {
-            DebugWindow.LogError($"[PickIt] Error rendering death status: {ex.Message}");
+            DebugWindow.LogError($"[PickIt] Error rendering debug info: {ex.Message}");
         }
     }
 

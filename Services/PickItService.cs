@@ -305,7 +305,7 @@ public class PickItService : IPickItService, IDisposable
 
     private void ProcessItemAttempts(List<PickItItemData> items)
     {
-        if (!_settings.PickupAttemptSettings.EnablePickupAttemptLimiting)
+        if (!_settings.SmartPickupSettings.EnablePickupAttemptLimiting)
             return;
             
         foreach (var item in items)
@@ -335,11 +335,9 @@ public class PickItService : IPickItService, IDisposable
             {
                 _lastAreaHash = currentAreaHash;
                 
-                if (_settings.PickupAttemptSettings.ResetAttemptsOnAreaChange)
-                {
-                    DebugWindow.LogMsg("[PickItService] Area change detected, resetting pickup attempts");
-                    // Note: Items will be refreshed automatically by the cache, so no need to reset existing items
-                }
+                // Always reset attempts on area change for simplicity
+                DebugWindow.LogMsg("[PickItService] Area change detected, resetting pickup attempts");
+                // Note: Items will be refreshed automatically by the cache, so no need to reset existing items
             }
         }
         catch (Exception ex)
@@ -357,12 +355,9 @@ public class PickItService : IPickItService, IDisposable
             // Stop pickup task
             StopPickupTask();
             
-            // Clear failed items if setting is enabled
-            if (_settings.DeathAwarenessSettings.ClearFailedItemsOnDeath)
-            {
-                DebugWindow.LogMsg("[PickItService] Clearing failed item attempts due to death");
-                // Items will be refreshed automatically by the cache
-            }
+            // Always clear failed items on death for simplicity
+            DebugWindow.LogMsg("[PickItService] Clearing failed item attempts due to death");
+            // Items will be refreshed automatically by the cache
         }
         catch (Exception ex)
         {
@@ -376,7 +371,7 @@ public class PickItService : IPickItService, IDisposable
         {
             DebugWindow.LogMsg("[PickItService] Player resurrection detected");
             
-            if (_settings.DeathAwarenessSettings.AutoResumeAfterDeath)
+            if (_settings.SmartPickupSettings.AutoResumeAfterDeath)
             {
                 DebugWindow.LogMsg("[PickItService] Auto-resuming pickup operations after resurrection");
                 // The pickup task will be restarted automatically by the main plugin

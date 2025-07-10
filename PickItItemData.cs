@@ -59,15 +59,15 @@ public class PickItItemData : ItemData
     /// </summary>
     public bool ShouldSkipDueToAttempts(PickItSettings settings)
     {
-        if (!settings.PickupAttemptSettings.EnablePickupAttemptLimiting)
+        if (!settings.SmartPickupSettings.EnablePickupAttemptLimiting)
             return false;
             
         // Priority items ignore attempt limits if setting is enabled
-        if (IsPriorityItem && settings.PickupAttemptSettings.PriorityItemsIgnoreLimit)
+        if (IsPriorityItem && settings.SmartPickupSettings.PriorityItemsIgnoreLimit)
             return false;
             
         // Check if max attempts reached
-        if (AttemptedPickups >= settings.PickupAttemptSettings.MaxPickupAttempts)
+        if (AttemptedPickups >= settings.SmartPickupSettings.MaxPickupAttempts)
         {
             IsMaxAttemptsReached = true;
             return true;
@@ -81,13 +81,14 @@ public class PickItItemData : ItemData
     /// </summary>
     public bool ShouldResetAttempts(PickItSettings settings)
     {
-        if (!settings.PickupAttemptSettings.EnablePickupAttemptLimiting)
+        if (!settings.SmartPickupSettings.EnablePickupAttemptLimiting)
             return false;
             
         if (LastAttemptTime == DateTime.MinValue)
             return false;
             
-        var resetTime = TimeSpan.FromMilliseconds(settings.PickupAttemptSettings.AttemptResetTime);
+        // Fixed 30 second reset time for simplicity
+        var resetTime = TimeSpan.FromSeconds(30);
         return TimeSinceLastAttempt >= resetTime;
     }
     

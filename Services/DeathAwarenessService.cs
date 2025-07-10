@@ -42,13 +42,13 @@ public class DeathAwarenessService : IDeathAwarenessService
     {
         ThrowIfDisposed();
         
-        if (!_settings.DeathAwarenessSettings.EnableDeathAwareness)
+        if (!_settings.SmartPickupSettings.EnableDeathAwareness)
             return;
             
         var now = DateTime.Now;
         
-        // Check if enough time has passed since last death check
-        if (now - _lastDeathCheckTime < TimeSpan.FromMilliseconds(_settings.DeathAwarenessSettings.DeathCheckInterval))
+        // Check if enough time has passed since last death check (fixed 500ms interval)
+        if (now - _lastDeathCheckTime < TimeSpan.FromMilliseconds(500))
             return;
             
         _lastDeathCheckTime = now;
@@ -77,7 +77,7 @@ public class DeathAwarenessService : IDeathAwarenessService
                 
                 DebugWindow.LogMsg("[DeathAwarenessService] Player resurrection detected");
                 
-                if (_settings.DeathAwarenessSettings.AutoResumeAfterDeath)
+                if (_settings.SmartPickupSettings.AutoResumeAfterDeath)
                 {
                     DebugWindow.LogMsg("[DeathAwarenessService] Auto-resuming pickup operations");
                 }
@@ -85,11 +85,11 @@ public class DeathAwarenessService : IDeathAwarenessService
                 // Raise resurrection event
                 OnPlayerResurrection?.Invoke();
             }
-            // Check for resurrection timeout
+            // Check for resurrection timeout (fixed 30 second timeout)
             else if (_isWaitingForResurrection && isCurrentlyDead && _deathDetectedTime.HasValue)
             {
                 var waitTime = now - _deathDetectedTime.Value;
-                if (waitTime.TotalMilliseconds > _settings.DeathAwarenessSettings.ResurrectionTimeout)
+                if (waitTime.TotalMilliseconds > 30000)
                 {
                     DebugWindow.LogMsg("[DeathAwarenessService] Resurrection timeout reached - stopping death handling");
                     ResetDeathState();
@@ -164,7 +164,7 @@ public class DeathAwarenessService : IDeathAwarenessService
     {
         ThrowIfDisposed();
         
-        if (!_settings.DeathAwarenessSettings.EnableDeathAwareness)
+        if (!_settings.SmartPickupSettings.EnableDeathAwareness)
             return true;
             
         // Don't allow pickup if player is dead or waiting for resurrection
@@ -174,7 +174,7 @@ public class DeathAwarenessService : IDeathAwarenessService
         }
         
         // Allow pickup if auto-resume is enabled and player is alive
-        return _settings.DeathAwarenessSettings.AutoResumeAfterDeath || !_wasPlayerDead;
+        return _settings.SmartPickupSettings.AutoResumeAfterDeath || !_wasPlayerDead;
     }
     
     /// <summary>
@@ -184,7 +184,7 @@ public class DeathAwarenessService : IDeathAwarenessService
     {
         ThrowIfDisposed();
         
-        if (!_settings.DeathAwarenessSettings.EnableDeathAwareness)
+        if (!_settings.SmartPickupSettings.EnableDeathAwareness)
             return "Death awareness disabled";
             
         if (IsPlayerDead)
