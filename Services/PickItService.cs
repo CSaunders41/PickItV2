@@ -23,11 +23,13 @@ public class PickItService : IPickItService, IDisposable
     private readonly IItemFilterService _itemFilterService;
     private readonly IInputService _inputService;
     private readonly IChestService _chestService;
+    private readonly IDeathAwarenessService _deathAwarenessService;
     
     private readonly CachedValue<List<PickItItemData>> _availableItems;
     private volatile bool _isPickingUp = false;
     private volatile bool _disposed = false;
     private SyncTask<bool> _pickupTask;
+    private uint _lastAreaHash = 0;
 
     public PickItService(
         GameController gameController,
@@ -35,7 +37,8 @@ public class PickItService : IPickItService, IDisposable
         IInventoryService inventoryService,
         IItemFilterService itemFilterService,
         IInputService inputService,
-        IChestService chestService)
+        IChestService chestService,
+        IDeathAwarenessService deathAwarenessService)
     {
         _gameController = gameController ?? throw new ArgumentNullException(nameof(gameController));
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
@@ -43,8 +46,16 @@ public class PickItService : IPickItService, IDisposable
         _itemFilterService = itemFilterService ?? throw new ArgumentNullException(nameof(itemFilterService));
         _inputService = inputService ?? throw new ArgumentNullException(nameof(inputService));
         _chestService = chestService ?? throw new ArgumentNullException(nameof(chestService));
+        _deathAwarenessService = deathAwarenessService ?? throw new ArgumentNullException(nameof(deathAwarenessService));
         
         _availableItems = new FrameCache<List<PickItItemData>>(GetAvailableItemsInternal);
+        
+        // Subscribe to death awareness events
+        _deathAwarenessService.OnPlayerDeath += OnPlayerDeath;
+        _deathAwarenessService.OnPlayerResurrection += OnPlayerResurrection;
+        
+        // Initialize area hash
+        _lastAreaHash = _gameController.Game?.IngameState?.Data?.CurrentAreaHash ?? 0;
     }
 
     public bool IsPickingUp => _isPickingUp;
@@ -55,12 +66,25 @@ public class PickItService : IPickItService, IDisposable
         
         if (item == null || label == null) return false;
 
+        // Check death state before attempting pickup
+        if (!_deathAwarenessService.ShouldAllowPickup())
+        {
+            DebugWindow.LogMsg("[PickItService] Pickup blocked due to death state");
+            return false;
+        }
+
         var wasPickingUp = _isPickingUp;
         _isPickingUp = true;
         
         try
         {
-            return await _inputService.ClickItemAsync(item, label, customRect);
+            var result = await _inputService.ClickItemAsync(item, label, customRect);
+            
+            // Record pickup attempt with death awareness service
+            var itemName = GetItemName(item);
+            _deathAwarenessService.RecordPickupAttempt(itemName, result);
+            
+            return result;
         }
         catch (Exception ex)
         {
@@ -79,6 +103,9 @@ public class PickItService : IPickItService, IDisposable
         
         try
         {
+            // Check for area changes
+            CheckAreaChange();
+            
             var items = _availableItems?.Value;
             if (items == null) 
             {
@@ -86,8 +113,11 @@ public class PickItService : IPickItService, IDisposable
                 return Enumerable.Empty<PickItItemData>();
             }
 
+            // Process items for attempt management
+            ProcessItemAttempts(items);
+
             return filterAttempts 
-                ? items.Where(item => item?.AttemptedPickups == 0)
+                ? items.Where(item => ShouldAttemptPickup(item))
                 : items;
         }
         catch (Exception ex)
@@ -120,6 +150,16 @@ public class PickItService : IPickItService, IDisposable
         
         try
         {
+            // Check death status first
+            _deathAwarenessService.CheckDeathStatus();
+            
+            // Don't proceed if death awareness blocks pickup
+            if (!_deathAwarenessService.ShouldAllowPickup())
+            {
+                DebugWindow.LogMsg("[PickItService] Pickup iteration blocked due to death state");
+                return true;
+            }
+
             if (!_gameController.Window.IsForeground()) 
             {
                 DebugWindow.LogMsg("[PickItService] Window not in foreground, skipping pickup");
@@ -161,7 +201,9 @@ public class PickItService : IPickItService, IDisposable
 
                 if (shouldPickup)
                 {
-                    nearestItem.AttemptedPickups++;
+                    // Record attempt on the item
+                    nearestItem.RecordAttempt();
+                    
                     DebugWindow.LogMsg($"[PickItService] Attempting to pickup {nearestItem.BaseName} (attempt #{nearestItem.AttemptedPickups})");
                     
                     var result = await PickupItemAsync(
@@ -170,6 +212,13 @@ public class PickItService : IPickItService, IDisposable
                         nearestItem.QueriedItem.ClientRect);
                         
                     DebugWindow.LogMsg($"[PickItService] Pickup result for {nearestItem.BaseName}: {result}");
+                    
+                    // Check if item should be marked as max attempts reached
+                    if (!result && nearestItem.ShouldSkipDueToAttempts(_settings))
+                    {
+                        DebugWindow.LogMsg($"[PickItService] Item {nearestItem.BaseName} reached max attempts, will be skipped");
+                    }
+                    
                     return result;
                 }
             }
@@ -231,6 +280,127 @@ public class PickItService : IPickItService, IDisposable
         {
             DebugWindow.LogError($"[PickItService] Error checking if should lazy loot: {ex.Message}");
             return false;
+        }
+    }
+
+    private bool ShouldAttemptPickup(PickItItemData item)
+    {
+        if (item == null) return false;
+        
+        // Check if item should be skipped due to max attempts
+        if (item.ShouldSkipDueToAttempts(_settings))
+        {
+            return false;
+        }
+        
+        // Check if item is within pickup range
+        if (item.Distance > _settings.PickupRange)
+        {
+            return false;
+        }
+        
+        return true;
+    }
+
+    private void ProcessItemAttempts(List<PickItItemData> items)
+    {
+        if (!_settings.PickupAttemptSettings.EnablePickupAttemptLimiting)
+            return;
+            
+        foreach (var item in items)
+        {
+            try
+            {
+                // Reset attempts if enough time has passed
+                if (item.ShouldResetAttempts(_settings))
+                {
+                    item.ResetAttempts();
+                    DebugWindow.LogMsg($"[PickItService] Reset attempts for {item.BaseName} due to timeout");
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugWindow.LogError($"[PickItService] Error processing item attempts: {ex.Message}");
+            }
+        }
+    }
+
+    private void CheckAreaChange()
+    {
+        try
+        {
+            var currentAreaHash = _gameController.Game?.IngameState?.Data?.CurrentAreaHash ?? 0;
+            if (currentAreaHash != _lastAreaHash && currentAreaHash != 0)
+            {
+                _lastAreaHash = currentAreaHash;
+                
+                if (_settings.PickupAttemptSettings.ResetAttemptsOnAreaChange)
+                {
+                    DebugWindow.LogMsg("[PickItService] Area change detected, resetting pickup attempts");
+                    // Note: Items will be refreshed automatically by the cache, so no need to reset existing items
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[PickItService] Error checking area change: {ex.Message}");
+        }
+    }
+
+    private void OnPlayerDeath()
+    {
+        try
+        {
+            DebugWindow.LogMsg("[PickItService] Player death detected, stopping pickup operations");
+            
+            // Stop pickup task
+            StopPickupTask();
+            
+            // Clear failed items if setting is enabled
+            if (_settings.DeathAwarenessSettings.ClearFailedItemsOnDeath)
+            {
+                DebugWindow.LogMsg("[PickItService] Clearing failed item attempts due to death");
+                // Items will be refreshed automatically by the cache
+            }
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[PickItService] Error handling player death: {ex.Message}");
+        }
+    }
+
+    private void OnPlayerResurrection()
+    {
+        try
+        {
+            DebugWindow.LogMsg("[PickItService] Player resurrection detected");
+            
+            if (_settings.DeathAwarenessSettings.AutoResumeAfterDeath)
+            {
+                DebugWindow.LogMsg("[PickItService] Auto-resuming pickup operations after resurrection");
+                // The pickup task will be restarted automatically by the main plugin
+            }
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[PickItService] Error handling player resurrection: {ex.Message}");
+        }
+    }
+
+    private string GetItemName(Entity item)
+    {
+        try
+        {
+            var worldItem = item?.GetComponent<WorldItem>();
+            if (worldItem?.ItemEntity != null)
+            {
+                return worldItem.ItemEntity.GetComponent<Base>()?.Name ?? "Unknown Item";
+            }
+            return "Unknown Item";
+        }
+        catch (Exception)
+        {
+            return "Unknown Item";
         }
     }
 
@@ -343,6 +513,13 @@ public class PickItService : IPickItService, IDisposable
         
         try
         {
+            // Unsubscribe from events
+            if (_deathAwarenessService != null)
+            {
+                _deathAwarenessService.OnPlayerDeath -= OnPlayerDeath;
+                _deathAwarenessService.OnPlayerResurrection -= OnPlayerResurrection;
+            }
+            
             _pickupTask = null;
             // Note: CachedValue doesn't implement IDisposable, so we don't dispose it
         }

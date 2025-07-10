@@ -47,6 +47,81 @@ public class PickItSettings : ISettings
 
     [JsonIgnore]
     public FilterNode Filters { get; } = new FilterNode();
+
+    // Death Awareness & Pickup Attempt Settings
+    public DeathAwarenessSettings DeathAwarenessSettings { get; set; } = new();
+    public PickupAttemptSettings PickupAttemptSettings { get; set; } = new();
+    
+    // Range & Visualization Settings
+    public RangeVisualizationSettings RangeVisualizationSettings { get; set; } = new();
+}
+
+[Submenu(CollapsedByDefault = false)]
+public class DeathAwarenessSettings
+{
+    [Menu("Enable Death Awareness", "Prevents getting stuck in pickup loops when player dies")]
+    public ToggleNode EnableDeathAwareness { get; set; } = new ToggleNode(true);
+    
+    [ConditionalDisplay(nameof(EnableDeathAwareness))]
+    [Menu("Death Detection Check Interval (ms)", "How often to check if player is dead")]
+    public RangeNode<int> DeathCheckInterval { get; set; } = new RangeNode<int>(500, 100, 2000);
+    
+    [ConditionalDisplay(nameof(EnableDeathAwareness))]
+    [Menu("Auto Resume After Death", "Automatically resume pickup when player resurrects")]
+    public ToggleNode AutoResumeAfterDeath { get; set; } = new ToggleNode(true);
+    
+    [ConditionalDisplay(nameof(EnableDeathAwareness))]
+    [Menu("Clear Failed Items On Death", "Reset pickup attempts for all items when player dies")]
+    public ToggleNode ClearFailedItemsOnDeath { get; set; } = new ToggleNode(true);
+    
+    [ConditionalDisplay(nameof(EnableDeathAwareness))]
+    [Menu("Resurrection Timeout (ms)", "How long to wait for resurrection before giving up")]
+    public RangeNode<int> ResurrectionTimeout { get; set; } = new RangeNode<int>(30000, 5000, 120000);
+}
+
+[Submenu(CollapsedByDefault = false)]
+public class PickupAttemptSettings
+{
+    [Menu("Enable Pickup Attempt Limiting", "Limit how many times to try picking up each item")]
+    public ToggleNode EnablePickupAttemptLimiting { get; set; } = new ToggleNode(true);
+    
+    [ConditionalDisplay(nameof(EnablePickupAttemptLimiting))]
+    [Menu("Max Pickup Attempts", "Maximum attempts before giving up on an item")]
+    public RangeNode<int> MaxPickupAttempts { get; set; } = new RangeNode<int>(3, 1, 20);
+    
+    [ConditionalDisplay(nameof(EnablePickupAttemptLimiting))]
+    [Menu("Attempt Reset Time (ms)", "Time after which pickup attempts are reset")]
+    public RangeNode<int> AttemptResetTime { get; set; } = new RangeNode<int>(30000, 5000, 300000);
+    
+    [ConditionalDisplay(nameof(EnablePickupAttemptLimiting))]
+    [Menu("Reset Attempts On Area Change", "Reset pickup attempts when changing areas")]
+    public ToggleNode ResetAttemptsOnAreaChange { get; set; } = new ToggleNode(true);
+    
+    [ConditionalDisplay(nameof(EnablePickupAttemptLimiting))]
+    [Menu("Priority Items Ignore Limit", "Currency and valuable items ignore attempt limits")]
+    public ToggleNode PriorityItemsIgnoreLimit { get; set; } = new ToggleNode(true);
+}
+
+[Submenu(CollapsedByDefault = false)]
+public class RangeVisualizationSettings
+{
+    [Menu("Show Pickup Range", "Display pickup range circle around player")]
+    public ToggleNode ShowPickupRange { get; set; } = new ToggleNode(false);
+    
+    [ConditionalDisplay(nameof(ShowPickupRange))]
+    [Menu("Range Circle Color", "Color of the pickup range circle")]
+    public ColorNode RangeCircleColor { get; set; } = new Color(0, 255, 0, 128);
+    
+    [ConditionalDisplay(nameof(ShowPickupRange))]
+    [Menu("Range Circle Thickness", "Thickness of the pickup range circle")]
+    public RangeNode<int> RangeCircleThickness { get; set; } = new RangeNode<int>(2, 1, 10);
+    
+    [Menu("Show Death Status", "Display death status and pickup statistics")]
+    public ToggleNode ShowDeathStatus { get; set; } = new ToggleNode(true);
+    
+    [ConditionalDisplay(nameof(ShowDeathStatus))]
+    [Menu("Death Status Position", "Position of death status display")]
+    public RangeNode<Vector2> DeathStatusPosition { get; set; } = new(new Vector2(10f, 200f), Vector2.Zero, new Vector2(100f, 100f));
 }
 
 [Submenu(CollapsedByDefault = false)]

@@ -36,6 +36,7 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
     private IChestService _chestService;
     private IPortalService _portalService;
     private IValidationService _validationService;
+    private IDeathAwarenessService _deathAwarenessService;
 
     // Service manager
     private PickItServiceManager _serviceManager;
@@ -71,7 +72,7 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
             
             _servicesInitialized = true;
             
-            DebugWindow.LogMsg("[PickIt] Successfully initialized with service architecture");
+            DebugWindow.LogMsg("[PickIt] Successfully initialized with service architecture and death awareness");
             return true;
         }
         catch (Exception ex)
@@ -87,6 +88,9 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
         
         try
         {
+            // Update death awareness
+            _deathAwarenessService.CheckDeathStatus();
+            
             // Update inventory
             _inventoryService.RefreshInventory();
             
@@ -117,6 +121,10 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
             // Render all UI elements
             _renderService.RenderAll();
             
+            // Render pickup range and death status
+            RenderPickupRange();
+            RenderDeathStatus();
+            
             // Handle pickup task
             HandlePickupTask();
             
@@ -137,6 +145,9 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
         // Validate and clamp settings
         _validationService.ClampConfigurationValues(Settings);
         
+        // Death awareness service (initialized early)
+        _deathAwarenessService = new DeathAwarenessService(GameController, Settings);
+        
         // Core services
         _inventoryService = new InventoryService(GameController);
         _itemFilterService = new ItemFilterService(GameController, Settings);
@@ -147,14 +158,15 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
         _chestService = new ChestService(GameController, Settings, _itemFilterService, _inputService);
         _renderService = new RenderService(GameController, Settings, _inventoryService, _itemFilterService, Graphics);
         
-        // Main orchestrator service
+        // Main orchestrator service (now includes death awareness)
         _pickItService = new PickItService(
             GameController,
             Settings,
             _inventoryService,
             _itemFilterService,
             _inputService,
-            _chestService);
+            _chestService,
+            _deathAwarenessService);
     }
 
     private void RegisterServices()
@@ -168,6 +180,7 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
         _serviceManager.RegisterService<IChestService>(_chestService);
         _serviceManager.RegisterService<IPortalService>(_portalService);
         _serviceManager.RegisterService<IValidationService>(_validationService);
+        _serviceManager.RegisterService<IDeathAwarenessService>(_deathAwarenessService);
     }
 
     private void RegisterPluginBridgeMethods()
@@ -189,6 +202,16 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
                 
             GameController.PluginBridge.SaveMethod("PickIt.ReloadFilters",
                 () => _itemFilterService.ReloadFilters());
+                
+            // New death awareness bridge methods
+            GameController.PluginBridge.SaveMethod("PickIt.IsPlayerDead",
+                () => _deathAwarenessService.IsPlayerDead);
+                
+            GameController.PluginBridge.SaveMethod("PickIt.GetPickupStatistics",
+                () => _deathAwarenessService.GetPickupStatistics());
+                
+            GameController.PluginBridge.SaveMethod("PickIt.ResetDeathState",
+                () => _deathAwarenessService.ResetDeathState());
         }
         catch (Exception ex)
         {
@@ -225,7 +248,8 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
         {
             var workMode = _inputService.GetCurrentWorkMode();
             
-            if (workMode != WorkMode.Stop)
+            // Check if death awareness allows pickup
+            if (workMode != WorkMode.Stop && _deathAwarenessService.ShouldAllowPickup())
             {
                 _pickItService.StartPickupTask();
             }
@@ -237,6 +261,96 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
         catch (Exception ex)
         {
             DebugWindow.LogError($"[PickIt] Error handling pickup task: {ex.Message}");
+        }
+    }
+
+    private void RenderPickupRange()
+    {
+        try
+        {
+            if (!Settings.RangeVisualizationSettings.ShowPickupRange) return;
+            
+            var playerRender = GameController.Player?.GetComponent<Render>();
+            if (playerRender == null) return;
+            
+            var playerPos = playerRender.Pos;
+            var range = Settings.PickupRange;
+            var color = Settings.RangeVisualizationSettings.RangeCircleColor;
+            var thickness = Settings.RangeVisualizationSettings.RangeCircleThickness;
+            
+            DrawEllipseToWorld(playerPos, range, 25, thickness, color);
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[PickIt] Error rendering pickup range: {ex.Message}");
+        }
+    }
+
+    private void RenderDeathStatus()
+    {
+        try
+        {
+            if (!Settings.RangeVisualizationSettings.ShowDeathStatus) return;
+            
+            var position = Settings.RangeVisualizationSettings.DeathStatusPosition;
+            var screenPos = new Vector2(position.X, position.Y);
+            
+            // Get death status
+            var deathStatus = _deathAwarenessService.GetStatusString();
+            var statistics = _deathAwarenessService.GetPickupStatistics();
+            
+            // Create status text
+            var statusText = $"Death Status: {deathStatus}\n" +
+                           $"Pickup Success Rate: {statistics.SuccessRate:F1}%\n" +
+                           $"Total Attempts: {statistics.TotalAttempts}\n" +
+                           $"Successful: {statistics.SuccessfulPickups} | Failed: {statistics.FailedPickups}\n" +
+                           $"Session Duration: {statistics.SessionDuration.TotalMinutes:F1}m";
+            
+            // Choose color based on death state
+            var textColor = _deathAwarenessService.IsPlayerDead ? Color.Red : 
+                           _deathAwarenessService.IsWaitingForResurrection ? Color.Yellow : Color.Green;
+            
+            Graphics.DrawText(statusText, screenPos, textColor, 12);
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[PickIt] Error rendering death status: {ex.Message}");
+        }
+    }
+
+    private void DrawEllipseToWorld(Vector3 vector3Pos, int radius, int points, int lineWidth, Color color)
+    {
+        try
+        {
+            var camera = GameController.Game.IngameState.Camera;
+            var playerPos = GameController.Player.Pos;
+            
+            if (Math.Abs(vector3Pos.Z - playerPos.Z) > 50) return;
+            
+            var step = 2.0f * Math.PI / points;
+            var prevPoint = Vector3.Zero;
+            
+            for (int i = 0; i <= points; i++)
+            {
+                var angle = i * step;
+                var x = (float)(vector3Pos.X + radius * Math.Cos(angle));
+                var y = (float)(vector3Pos.Y + radius * Math.Sin(angle));
+                var z = vector3Pos.Z;
+                
+                var worldPoint = new Vector3(x, y, z);
+                var screenPoint = camera.WorldToScreen(worldPoint);
+                
+                if (i > 0 && prevPoint != Vector3.Zero)
+                {
+                    Graphics.DrawLine(prevPoint, screenPoint, lineWidth, color);
+                }
+                
+                prevPoint = screenPoint;
+            }
+        }
+        catch (Exception ex)
+        {
+            DebugWindow.LogError($"[PickIt] Error drawing range ellipse: {ex.Message}");
         }
     }
 
@@ -293,13 +407,14 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
             _renderService?.Dispose();
             _chestService?.Dispose();
             _portalService?.Dispose();
+            _deathAwarenessService?.Dispose();
             
             // Clear service manager
             _serviceManager?.Clear();
             
             _servicesInitialized = false;
             
-            DebugWindow.LogMsg("[PickIt] Successfully disposed all services");
+            DebugWindow.LogMsg("[PickIt] Successfully disposed all services including death awareness");
         }
         catch (Exception ex)
         {
@@ -321,4 +436,5 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
     public IChestService ChestService => _chestService;
     public IPortalService PortalService => _portalService;
     public IValidationService ValidationService => _validationService;
+    public IDeathAwarenessService DeathAwarenessService => _deathAwarenessService;
 } 
