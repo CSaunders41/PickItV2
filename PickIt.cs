@@ -329,7 +329,7 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
             if (Math.Abs(vector3Pos.Z - playerPos.Z) > 50) return;
             
             var step = 2.0f * Math.PI / points;
-            var prevPoint = Vector2.Zero;
+            var prevPoint = SDxVector2.Zero;
             
             for (int i = 0; i <= points; i++)
             {
@@ -341,7 +341,7 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
                 var worldPoint = new SDxVector3(x, y, z);
                 var screenPoint = camera.WorldToScreen(worldPoint);
                 
-                if (i > 0 && prevPoint != Vector2.Zero)
+                if (i > 0 && prevPoint != SDxVector2.Zero)
                 {
                     Graphics.DrawLine(prevPoint, screenPoint, lineWidth, color);
                 }
