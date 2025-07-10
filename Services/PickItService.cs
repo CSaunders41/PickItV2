@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExileCore;
 using ExileCore.PoEMemory;
+using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.Elements;
 using ExileCore.PoEMemory.MemoryObjects;
 using ExileCore.Shared;

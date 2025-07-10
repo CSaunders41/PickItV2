@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using ExileCore.PoEMemory;
 using SharpDX;
 using SDxVector2 = SharpDX.Vector2;
+using SDxVector3 = SharpDX.Vector3;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
 
@@ -293,7 +294,7 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
             if (!Settings.RangeVisualizationSettings.ShowDeathStatus) return;
             
             var position = Settings.RangeVisualizationSettings.DeathStatusPosition;
-            var screenPos = new Vector2(position.X, position.Y);
+            var screenPos = new Vector2(position.Value.X, position.Value.Y);
             
             // Get death status
             var deathStatus = _deathAwarenessService.GetStatusString();
@@ -318,7 +319,7 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
         }
     }
 
-    private void DrawEllipseToWorld(Vector3 vector3Pos, int radius, int points, int lineWidth, Color color)
+    private void DrawEllipseToWorld(SDxVector3 vector3Pos, int radius, int points, int lineWidth, Color color)
     {
         try
         {
@@ -328,7 +329,7 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
             if (Math.Abs(vector3Pos.Z - playerPos.Z) > 50) return;
             
             var step = 2.0f * Math.PI / points;
-            var prevPoint = Vector3.Zero;
+            var prevPoint = Vector2.Zero;
             
             for (int i = 0; i <= points; i++)
             {
@@ -337,10 +338,10 @@ public partial class PickIt : BaseSettingsPlugin<PickItSettings>
                 var y = (float)(vector3Pos.Y + radius * Math.Sin(angle));
                 var z = vector3Pos.Z;
                 
-                var worldPoint = new Vector3(x, y, z);
+                var worldPoint = new SDxVector3(x, y, z);
                 var screenPoint = camera.WorldToScreen(worldPoint);
                 
-                if (i > 0 && prevPoint != Vector3.Zero)
+                if (i > 0 && prevPoint != Vector2.Zero)
                 {
                     Graphics.DrawLine(prevPoint, screenPoint, lineWidth, color);
                 }

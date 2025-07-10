@@ -50,6 +50,16 @@ public interface IDeathAwarenessService : IDisposable
     void RecordPickupAttempt(string itemName, bool success);
     
     /// <summary>
+    /// Checks if pickup should be allowed based on death state
+    /// </summary>
+    bool ShouldAllowPickup();
+    
+    /// <summary>
+    /// Gets a status string for display purposes
+    /// </summary>
+    string GetStatusString();
+    
+    /// <summary>
     /// Event raised when player dies
     /// </summary>
     event Action OnPlayerDeath;

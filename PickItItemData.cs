@@ -2,6 +2,7 @@ using System;
 using ExileCore;
 using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.Elements;
+using ExileCore.Shared.Enums;
 using ItemFilterLibrary;
 
 namespace PickIt;
@@ -128,15 +129,11 @@ public class PickItItemData : ItemData
                 return true;
                 
             // Check for gems with quality
-            if (itemPath.Contains("SkillGems") && Quality > 0)
+            if (itemPath.Contains("SkillGems"))
                 return true;
                 
-            // Check for rare items with high item level
-            if (Rarity == ItemRarity.Rare && ItemLevel >= 75)
-                return true;
-                
-            // Check for unique items
-            if (Rarity == ItemRarity.Unique)
+            // Check for rare and unique items (simplified - any rare/unique is priority)
+            if (itemPath.Contains("Rare") || itemPath.Contains("Unique"))
                 return true;
                 
             return false;
